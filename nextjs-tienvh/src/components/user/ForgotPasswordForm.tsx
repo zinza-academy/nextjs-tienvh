@@ -6,10 +6,13 @@ import { TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { Container, Stack } from '@mui/material';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/lib/store';
+import { setIsSubmitting } from '@/redux/slices/InputSlice';
 export default function ForgotPasswordForm() {
+    const dispatch = useDispatch<AppDispatch>();
     const [email, setEmail] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { isSubmitting } = useSelector((state: RootState) => state.input);
     const router = useRouter();
 
     const isFormValid = email.trim() !== '';
@@ -18,14 +21,17 @@ export default function ForgotPasswordForm() {
       e.preventDefault();
       if (!isFormValid || isSubmitting) return;
   
-      setIsSubmitting(true);
-      
-      // Fake request
+      dispatch(setIsSubmitting(true));
       setTimeout(() => {
-        setIsSubmitting(false);
+        dispatch(setIsSubmitting(false));
         router.push('/user/login');
       }, 2000);
     };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEmail(e.target.value);
+    };
+
 
     return (
         <Container sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
@@ -39,7 +45,7 @@ export default function ForgotPasswordForm() {
                     type="email"
                     placeholder="Email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
                     margin="normal"
                     
                 />
