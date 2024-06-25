@@ -5,7 +5,7 @@ const UserPage = () => {
   return (
     <main>
       <div>User Page</div>
-      <Link href="/user/forgot-password">Forgot Password</Link>
+      <Link href="/user/login">Đăng nhập</Link>
     </main>
     
   )

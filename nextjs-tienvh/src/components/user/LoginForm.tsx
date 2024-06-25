@@ -43,6 +43,9 @@ export default function LoginForm() {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
+  const handleRegisterClick = () => {
+    router.push('/user/register');
+  };
 
   return (
     <Container
@@ -124,6 +127,7 @@ export default function LoginForm() {
 
         <Button
           variant="outlined"
+          onClick={handleRegisterClick}
           fullWidth
           sx={{
             fontWeight: 'bold',
