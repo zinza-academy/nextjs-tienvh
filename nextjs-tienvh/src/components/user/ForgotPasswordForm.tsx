@@ -6,7 +6,11 @@ import { TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Container, Stack } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+interface ForgotPasswordFormData {
+  email: string
+}
 
 export default function ForgotPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,14 +19,14 @@ export default function ForgotPasswordForm() {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<ForgotPasswordFormData>({
     defaultValues: {
       email: "",
     },
     mode: "onChange",
   });
 
-  const onSubmit = (data: { email: any }) => {
+  const onSubmit: SubmitHandler<ForgotPasswordFormData> = data => {
     if (isSubmitting) return;
 
     setIsSubmitting(true);
@@ -69,7 +73,8 @@ export default function ForgotPasswordForm() {
               sx={{
                 flexGrow: 1,
                 minWidth: "100px",
-                color: "#303f9f",
+                // color: "#303f9f",
+                color: (theme) => (theme.palette.primary.dark),
                 borderColor: "#303f9f",
                 "&:hover": {
                   opacity: "0.9",
