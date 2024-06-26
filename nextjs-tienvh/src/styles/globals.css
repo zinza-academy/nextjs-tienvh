@@ -33,3 +33,12 @@ a {
   text-decoration: none;
 }
 
+.forgot-pass {
+  font-size: 14px;
+  display: grid;
+  justify-content: end;
+  color: #3949AB;
+}
+.forgot-pass:hover {
+  opacity: 0.8;
+}

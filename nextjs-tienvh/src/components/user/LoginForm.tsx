@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Container } from '@mui/material';
 import { useState } from 'react'
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 interface LoginFormData {
   email: string,
@@ -28,6 +28,17 @@ export default  function LoginForm() {
     mode: "onChange",
   });
 
+  const onSubmit: SubmitHandler<LoginFormData> = data => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    //Fake request
+    setTimeout(() => {
+      setIsSubmitting(false);
+      router.push("/user/login");
+    }, 2000);
+  };
   return (
     <Container
       sx={{
@@ -38,16 +49,27 @@ export default  function LoginForm() {
         padding: '20px'
       }}
     >
-      <Box component="form" sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', gap: 3, padding: '20px', boxSizing: 'border-box'}}>
+      <Box component="form"  onSubmit={handleSubmit(onSubmit)}  sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', gap: 3, padding: '20px', boxSizing: 'border-box'}}>
         <Typography variant="h4" sx={{ fontWeight:'bold'}} mb={3}>
           Đăng nhập vào tài khoản
         </Typography>
 
-        <Box sx={{display: 'flex', flexDirection: 'column'}}>
+        <Box  sx={{display: 'flex', flexDirection: 'column'}}>
           <label style={{paddingBottom: '5px'}}>Email</label>
           <TextField
             type="email"
             placeholder="Nhập email của bạn"
+            margin="normal"
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            {...register("email", { required: "Email không được để trống" })}
+            FormHelperTextProps={{
+              sx: {
+                color: 'red',
+                margin: 0,
+                paddingTop: '3px'
+              },
+            }}
           />
         </Box>
 
@@ -56,6 +78,27 @@ export default  function LoginForm() {
           <TextField
             type="password"
             placeholder="Nhập mật khẩu của bạn"
+            margin="normal"
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            {...register("password", { 
+              required: "Mật khẩu không được để trống",
+              minLength: {
+                value: 8,
+                message: "Mật khẩu phải có ít nhất 8 ký tự"
+              },
+              pattern: {
+                value: /^\S*$/,
+                message: "Mật khẩu không được chứa dấu cách"
+              },
+             })}
+            FormHelperTextProps={{
+              sx: {
+                color: 'red',
+                margin: 0,
+                paddingTop: '3px'
+              },
+            }}
           />
         </Box>
         
@@ -65,7 +108,7 @@ export default  function LoginForm() {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={isSubmitting}
+          disabled={!isValid || isSubmitting}
           sx={{
             fontWeight: 'bold',
             fontSize: '16px',
@@ -93,7 +136,6 @@ export default  function LoginForm() {
             color: '#9ccc65',
             borderColor: "#9ccc65",
             height: '50px',
-            marginTop: '100px',
             "&:hover": {
               opacity: 0.9,
             },
@@ -105,5 +147,3 @@ export default  function LoginForm() {
     </Container>
   );
 }
-
-

@@ -73,8 +73,7 @@ export default function ForgotPasswordForm() {
               sx={{
                 flexGrow: 1,
                 minWidth: "100px",
-                // color: "#303f9f",
-                color: (theme) => (theme.palette.primary.dark),
+                color: "#303f9f",
                 borderColor: "#303f9f",
                 "&:hover": {
                   opacity: "0.9",
