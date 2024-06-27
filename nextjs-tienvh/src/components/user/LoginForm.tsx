@@ -4,13 +4,20 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
-import { Container } from '@mui/material';
-import { useState } from 'react'
+import { Container, Snackbar } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {Link as MuiLink} from '@mui/material';
 import NextLink from 'next/link';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/lib/store';
+import { loginUser, clearError } from '@/redux/slices/LoginSlice';
+import { useEffect, useState } from 'react';
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
+import React from 'react';
+
 
 const schema = yup.object().shape({
   email: yup
@@ -25,12 +32,16 @@ const schema = yup.object().shape({
 });
 
 interface LoginFormData {
-  email: string,
-  password: string
+  email: string;
+  password: string;
 }
-export default  function LoginForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+export default function LoginForm() {
+  const dispatch = useDispatch<AppDispatch>();
+  const [open, setOpen] = useState(false);
   const router = useRouter();
+  const { isLoading, token, error } = useSelector((state: RootState) => state.login);
+  
   const {
     register,
     handleSubmit,
@@ -40,17 +51,19 @@ export default  function LoginForm() {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<LoginFormData> = data => {
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-
-    //Fake request
-    setTimeout(() => {
-      setIsSubmitting(false);
-      router.push("/user/login");
-    }, 2000);
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+    dispatch(clearError());
+    try {
+      await dispatch(loginUser(data)).unwrap();
+      setOpen(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    } catch (err) {
+    }
   };
+
+
   return (
     <Container
       sx={{
@@ -61,12 +74,12 @@ export default  function LoginForm() {
         padding: '20px'
       }}
     >
-      <Box component="form"  onSubmit={handleSubmit(onSubmit)}  sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', gap: 3, padding: '20px', boxSizing: 'border-box'}}>
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{display: 'flex', justifyContent: 'center', flexDirection: 'column', gap: 3, padding: '20px', boxSizing: 'border-box'}}>
         <Typography variant="h4" sx={{ fontWeight:'bold'}} mb={3}>
           Đăng nhập vào tài khoản
         </Typography>
 
-        <Box  sx={{display: 'flex', flexDirection: 'column'}}>
+        <Box sx={{display: 'flex', flexDirection: 'column'}}>
           <label style={{paddingBottom: '5px'}}>Email</label>
           <TextField
             type="email"
@@ -105,6 +118,7 @@ export default  function LoginForm() {
             }}
           />
         </Box>
+
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <MuiLink
             component={NextLink}
@@ -125,7 +139,7 @@ export default  function LoginForm() {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={!isValid || isSubmitting}
+          disabled={!isValid || isLoading}
           sx={{
             fontWeight: 'bold',
             fontSize: '16px',
@@ -137,13 +151,27 @@ export default  function LoginForm() {
             },
           }}
         >
-          {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
+          {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </Button>
-
+        <Snackbar open={open} autoHideDuration={6000} onClose={() => setOpen(false)}>
+          <Alert
+            severity="success"
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            Đăng nhập thành công!
+          </Alert>
+        </Snackbar>
+        {error && (
+          <Typography color="error" variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
+            {error}
+          </Typography>
+          
+        )}
+        
         <Typography sx={{textAlign: 'center'}}>
           Hoặc đăng ký tài khoản, nếu bạn chưa đăng ký!
         </Typography>
-
         <Button
           variant="outlined"
           fullWidth
