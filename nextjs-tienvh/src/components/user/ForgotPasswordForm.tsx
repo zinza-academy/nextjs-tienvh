@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Container, Stack } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
+import theme from "@/lib/theme";
 
 interface ForgotPasswordFormData {
   email: string
@@ -48,7 +49,7 @@ export default function ForgotPasswordForm() {
       }}
     >
       <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
-        <Typography sx={{ fontSize: "16px", textAlign: "center" }} mb={2}>
+        <Typography variant="body1" sx={{ textAlign: "center" }} mb={2}>
           Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để đăng ký{" "}
           <span style={{ color: "red" }}>(*)</span>
         </Typography>
@@ -73,9 +74,8 @@ export default function ForgotPasswordForm() {
               sx={{
                 flexGrow: 1,
                 minWidth: "100px",
-                // color: "#303f9f",
-                color: (theme) => (theme.palette.primary.dark),
-                borderColor: "#303f9f",
+                color: theme => theme.palette.primary.dark,
+                borderColor: theme => theme.palette.primary.dark,
                 "&:hover": {
                   opacity: "0.9",
                 },
@@ -91,9 +91,9 @@ export default function ForgotPasswordForm() {
               sx={{
                 flexGrow: 1,
                 minWidth: "100px",
-                backgroundColor: "#303f9f",
+                backgroundColor: theme => theme.palette.primary.dark,
                 "&:hover": {
-                  backgroundColor: "#303f9f",
+                  backgroundColor: theme => theme.palette.primary.dark,
                   opacity: "0.9",
                 },
                 borderRadius: "8px 8px 8px 0",

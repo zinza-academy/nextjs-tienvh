@@ -12,16 +12,22 @@ const theme = createTheme({
       'Arial',
       'sans-serif',
     ].join(','),
-    h1: {
-      fontSize: '2.5rem',
-      fontWeight: 500,
+  },
+  palette: {
+    primary: {
+      main: '#2d2188',
+      dark: '#303f9f'
     },
-    h2: {
-      fontSize: '2rem',
-      fontWeight: 500,
+    warning: {
+      main: '#c65312',
+      light: '#af8612'
     },
-    body1: {
-      fontSize: '1rem',
+    info: {
+      main: '#0593cf',
+      light: '#3949ab'
+    },
+    success: {
+      main: '#00884f',
     },
   },
   components: {

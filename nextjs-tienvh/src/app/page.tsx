@@ -1,11 +1,14 @@
-import Image from "next/image";
-import Link from "next/link";
-import theme from "../lib/theme";
+
+import { Button } from "@mui/material";
+import React, { Suspense } from "react";
+const LazyHomePage = React.lazy(() => import('@/app/dashboard/home/page'));
+
 export default function Home() {
   return (
     <main>
-      <h1>Hello</h1>
-      <Link href="/user">User</Link>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyHomePage />
+      </Suspense>
     </main>
-  )
+  );
 }

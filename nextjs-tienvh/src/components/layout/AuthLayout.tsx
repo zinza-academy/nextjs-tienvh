@@ -8,11 +8,11 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <Grid container>
-      <Grid item xs={12} md={6}>
+    <Grid container sx={{ height: '100vh' }}>
+      <Grid item xs={12} md={6} sx={{ height: '100vh', overflow: 'hidden' }}>
         <BackgroundImage />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6} sx={{ height: '100vh', overflow: 'auto' }}>
         {children}
       </Grid>
     </Grid>
