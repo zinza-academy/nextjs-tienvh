@@ -13,9 +13,8 @@ import * as yup from "yup"
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/store';
 import { loginUser, clearError } from '@/redux/slices/LoginSlice';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
 import React from 'react';
 
 

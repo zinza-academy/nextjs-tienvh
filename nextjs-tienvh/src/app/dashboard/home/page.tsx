@@ -19,7 +19,7 @@ const HomePage = () => {
   };
 
   const handleLogin = () => {
-    router.push('/login')
+    router.push('/user/login')
   }
 
   return (
