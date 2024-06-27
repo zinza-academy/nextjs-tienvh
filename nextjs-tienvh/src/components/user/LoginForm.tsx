@@ -9,6 +9,21 @@ import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {Link as MuiLink} from '@mui/material';
 import NextLink from 'next/link';
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Email không hợp lệ")
+    .required("Email không được để trống"),
+  password: yup
+    .string()
+    .required("Mật khẩu không được để trống")
+    .min(8, "Mật khẩu phải có ít nhất 8 ký tự")
+    .matches(/^\S*$/, "Mật khẩu không được chứa dấu cách"),
+});
+
 interface LoginFormData {
   email: string,
   password: string
@@ -21,10 +36,7 @@ export default  function LoginForm() {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<LoginFormData>({
-    defaultValues: {
-      email: "",
-      password: ""
-    },
+    resolver: yupResolver(schema),
     mode: "onChange",
   });
 
@@ -62,7 +74,7 @@ export default  function LoginForm() {
             margin="normal"
             error={!!errors.email}
             helperText={errors.email?.message}
-            {...register("email", { required: "Email không được để trống" })}
+            {...register("email")}
             autoComplete="email"
             FormHelperTextProps={{
               sx: {
@@ -82,17 +94,7 @@ export default  function LoginForm() {
             margin="normal"
             error={!!errors.password}
             helperText={errors.password?.message}
-            {...register("password", { 
-              required: "Mật khẩu không được để trống",
-              minLength: {
-                value: 8,
-                message: "Mật khẩu phải có ít nhất 8 ký tự"
-              },
-              pattern: {
-                value: /^\S*$/,
-                message: "Mật khẩu không được chứa dấu cách"
-              },
-             })}
+            {...register("password")}
             autoComplete="current-password"
             FormHelperTextProps={{
               sx: {
