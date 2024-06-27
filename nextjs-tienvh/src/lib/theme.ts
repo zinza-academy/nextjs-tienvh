@@ -12,63 +12,23 @@ const theme = createTheme({
       'Arial',
       'sans-serif',
     ].join(','),
-    h1: {
-      fontSize: '6rem',
-      fontWeight: 'light',
-      letterSpacing: '-0.6px'
+  },
+  palette: {
+    primary: {
+      main: '#2d2188',
+      dark: '#303f9f'
     },
-    h2: {
-      fontSize: '3.75rem',
-      fontWeight: 'light',
-      letterSpacing: '-0.6px',
-      textTransform: 'uppercase'
+    warning: {
+      main: '#c65312',
+      light: '#af8612'
     },
-    h3: {
-      fontSize: '3rem',
-      letterSpacing: '-0.2px',
-      textTransform: 'uppercase'
+    info: {
+      main: '#0593cf',
+      light: '#3949ab'
     },
-    h4: {
-      fontSize: '2.125rem',
-      textTransform: 'uppercase'
+    success: {
+      main: '#00884f',
     },
-    h5: {
-      fontSize: '1.5rem',
-      textTransform: 'uppercase'
-    },
-    h6: {
-      fontSize: '1.25rem',
-      fontWeight: 'medium',
-      letterSpacing: '-0.05px',
-      textTransform: 'uppercase'
-    },
-    body1: {
-      fontSize: '1rem',
-      letterSpacing:'-0.04px'
-    },
-    body2: {
-      fontSize: '0.875rem',
-      letterSpacing:'-0.04px'
-    },
-    subtitle1: {
-      fontSize: '1rem',
-      letterSpacing:'-0.04px'
-    },
-    subtitle2: {
-      fontSize: '0.875rem',
-      letterSpacing:'-0.05px',
-      fontWeight:'medium'
-    },
-    caption: {
-      fontSize: '0.75rem',
-      letterSpacing:'0.33px'
-    },
-    overline: {
-      fontSize: '0.75rem',
-      letterSpacing:'-0.04px',
-      textTransform: 'uppercase'
-    }
-
   },
   components: {
     MuiButton: {

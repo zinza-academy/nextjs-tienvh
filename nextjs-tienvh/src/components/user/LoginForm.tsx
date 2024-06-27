@@ -3,12 +3,12 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Container } from '@mui/material';
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
-
+import {Link as MuiLink} from '@mui/material';
+import NextLink from 'next/link';
 interface LoginFormData {
   email: string,
   password: string
@@ -63,6 +63,7 @@ export default  function LoginForm() {
             error={!!errors.email}
             helperText={errors.email?.message}
             {...register("email", { required: "Email không được để trống" })}
+            autoComplete="email"
             FormHelperTextProps={{
               sx: {
                 color: 'red',
@@ -92,6 +93,7 @@ export default  function LoginForm() {
                 message: "Mật khẩu không được chứa dấu cách"
               },
              })}
+            autoComplete="current-password"
             FormHelperTextProps={{
               sx: {
                 color: 'red',
@@ -101,8 +103,21 @@ export default  function LoginForm() {
             }}
           />
         </Box>
-        
-        <Link className="forgot-pass" href="/user/forgot-password">Quên mật khẩu?</Link>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <MuiLink
+            component={NextLink}
+            href="/user/forgot-password"
+            variant="body2"
+            sx={{
+              display: 'inline-block',
+              color: (theme) => theme.palette.info.light,
+              '&:hover': { color: '#1E88E5' },
+              textDecoration: 'none'
+            }}
+          >
+            Quên mật khẩu?
+          </MuiLink>
+        </Box>
 
         <Button
           type="submit"
