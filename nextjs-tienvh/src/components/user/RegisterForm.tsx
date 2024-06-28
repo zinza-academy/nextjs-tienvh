@@ -3,10 +3,9 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler, Controller, useWatch } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import dayjs from "dayjs";
 import {
   Alert,
   Box,
@@ -20,7 +19,6 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
 import { AppDispatch, RootState } from "@/lib/store";
 import {
   RegisterCredentials,
@@ -28,6 +26,77 @@ import {
   clearRegisterState,
 } from "@/redux/slices/RegisterSlice";
 
+type Ward = {
+  id: number;
+  name: string;
+};
+type District = {
+  id: number;
+  name: string;
+  provinceId: number;
+  wards: Ward[];
+};
+type Province = {
+  id: number;
+  name: string;
+  districts: District[];
+};
+
+type LocationData = Province[];
+const locationData: LocationData = [
+  {
+    id: 1,
+    name: "Hà Nội",
+    districts: [
+      {
+        id: 1,
+        name: "Ba Đình",
+        provinceId: 1,
+        wards: [
+          { id: 1, name: "Phúc Xá" },
+          { id: 2, name: "Trúc Bạch" },
+          { id: 3, name: "Vĩnh Phúc" },
+        ],
+      },
+      {
+        id: 2,
+        name: "Cầu Giấy",
+        provinceId: 1,
+        wards: [
+          { id: 1, name: "Nghĩa Đô" },
+          { id: 2, name: "Nghĩa Tân" },
+          { id: 3, name: "Mai Dịch" },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Hồ Chí Minh",
+    districts: [
+      {
+        id: 1,
+        name: "Quận 1",
+        provinceId: 2,
+        wards: [
+          { id: 1, name: "Bến Nghé" },
+          { id: 2, name: "Bến Thành" },
+          { id: 3, name: "Cầu Kho" },
+        ],
+      },
+      {
+        id: 2,
+        name: "Quận 2",
+        provinceId: 2,
+        wards: [
+          { id: 1, name: "An Phú" },
+          { id: 2, name: "Thảo Điền" },
+          { id: 3, name: "Bình An" },
+        ],
+      },
+    ],
+  },
+];
 const schema = yup.object().shape({
   cmt: yup
     .string()
@@ -51,9 +120,18 @@ const schema = yup.object().shape({
   name: yup.string().required("Họ và tên không được để trống"),
   dob: yup.string().required("Ngày sinh không được để trống"),
   gender: yup.string().required("Giới tính không được để trống"),
-  province: yup.string().required("Tỉnh/Thành Phố không được để trống"),
-  district: yup.string().required("Quận/Huyện không được để trống"),
-  ward: yup.string().required("Xã/Phường không được để trống"),
+  province: yup
+  .number()
+  .required("Tỉnh/Thành Phố không được để trống")
+  .test("province-check", "Vui lòng chọn Tỉnh/Thành Phố", (value) => value !== undefined && value !== 0),
+district: yup
+  .number()
+  .required("Quận/Huyện không được để trống")
+  .test("district-check", "Vui lòng chọn Quận/Huyện", (value) => value !== undefined && value !== 0),
+ward: yup
+  .number()
+  .required("Xã/Phường không được để trống")
+  .test("ward-check", "Vui lòng chọn Xã/Phường", (value) => value !== undefined && value !== 0),
 });
 
 export default function RegisterForm() {
@@ -68,10 +146,21 @@ export default function RegisterForm() {
     register,
     handleSubmit,
     control,
+    resetField,
     formState: { errors, isValid },
   } = useForm<RegisterCredentials>({
     resolver: yupResolver(schema),
     mode: "onChange",
+  });
+
+  const selectedProvince = useWatch<RegisterCredentials, "province">({
+    control,
+    name: "province",
+  });
+
+  const selectedDistrict = useWatch<RegisterCredentials, "district">({
+    control,
+    name: "district",
   });
 
   const onSubmit: SubmitHandler<RegisterCredentials> = async (data) => {
@@ -85,48 +174,59 @@ export default function RegisterForm() {
     } catch (err) {}
   };
 
+  const handleProvinceChange = (provinceId: number | undefined) => {
+    resetField("district", { defaultValue: undefined });
+    resetField("ward", { defaultValue: undefined });
+  };
+  
+  const handleDistrictChange = (districtId: number | undefined) => {
+    resetField("ward", { defaultValue: undefined });
+  };
+
   const renderFormField = (
     name: keyof RegisterCredentials,
     label: string,
     type: string = "text",
     placeholder: string,
-    options?: { value: string; label: string }[]
+    options?: { value: number; label: string }[]
   ) => {
-    const commonProps = {
-      placeholder,
-      margin: "normal",
-      error: !!errors[name],
-      helperText: errors[name]?.message,
-      ...register(name),
-    };
-
     return (
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
         <label style={{ paddingBottom: "5px" }}>
           {label}
           <span style={{ color: "red" }}>(*)</span>
         </label>
         {type === "select" ? (
-          <Controller
-            name={name}
-            control={control}
-            render={({ field }) => (
-              <TextField
-                select
-                fullWidth
-                {...field}
-                error={!!errors[name]}
-                helperText={errors[name]?.message}
-              >
-                {options?.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            )}
-          />
-        ) : type === "date" ? (
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => (
+            <TextField
+              select
+              fullWidth
+              {...field}
+              value={field.value || ""}
+              onChange={(e) => {
+                const value = e.target.value === "" ? undefined : parseInt(e.target.value, 10);
+                field.onChange(value);
+                if (name === "province" && typeof value === 'number') handleProvinceChange(value);
+                if (name === "district" && typeof value === 'number') handleDistrictChange(value);
+              }}
+              error={!!errors[name]}
+              helperText={errors[name]?.message}
+            >
+              <MenuItem value="">
+                {placeholder}
+              </MenuItem>
+              {options?.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+        />
+      ) : type === "date" ? (
           <Controller
             name={name}
             control={control}
@@ -158,6 +258,7 @@ export default function RegisterForm() {
       </Box>
     );
   };
+
   return (
     <Container
       sx={{
@@ -199,35 +300,53 @@ export default function RegisterForm() {
         {renderFormField("name", "Họ và tên", "text", "Nhập họ và tên")}
         {renderFormField("dob", "Ngày sinh", "date", "Chọn ngày sinh")}
         {renderFormField("gender", "Giới tính", "select", "Chọn giới tính", [
-          { value: "male", label: "Nam" },
-          { value: "female", label: "Nữ" },
-          { value: "other", label: "Khác" },
+          { value: 1, label: "Nam" },
+          { value: 2, label: "Nữ" },
+          { value: 3, label: "Khác" },
         ])}
+
         {renderFormField(
           "province",
           "Tỉnh/Thành phố",
           "select",
-          "Tỉnh/Thành phố",
-          [
-            { value: "hanoi", label: "Hà Nội" },
-            { value: "hcm", label: "Hồ Chí Minh" },
-            { value: "danang", label: "Đà Nẵng" },
-            { value: "cantho", label: "Cần Thơ" },
-          ]
+          "Chọn Tỉnh/Thành phố",
+          locationData.map((province) => ({
+            value: province.id,
+            label: province.name,
+          }))
         )}
-        {renderFormField("district", "Quận/Huyện", "select", "Quận/Huyện", [
-          { value: "district1", label: "Quận 1" },
-          { value: "district2", label: "Quận 2" },
-          { value: "district3", label: "Quận 3" },
-          { value: "district4", label: "Quận 4" },
-        ])}
-        {renderFormField("ward", "Xã/Phường", "select", "Xã/Phường", [
-          { value: "ward1", label: "Phường 1" },
-          { value: "ward2", label: "Phường 2" },
-          { value: "ward3", label: "Phường 3" },
-          { value: "ward4", label: "Phường 4" },
-        ])}
 
+        {renderFormField(
+          "district",
+          "Quận/Huyện",
+          "select",
+          "Chọn Quận/Huyện",
+          selectedProvince
+            ? locationData
+                .find((province) => province.id === selectedProvince)
+                ?.districts.map((district) => ({
+                  value: district.id,
+                  label: district.name,
+                })) || []
+            : []
+        )}
+
+        {renderFormField(
+          "ward",
+          "Xã/Phường",
+          "select",
+          "Chọn Xã/Phường",
+          selectedDistrict && selectedProvince
+            ? locationData
+                .find((province) => province.id === selectedProvince)
+                ?.districts.find((district) => district.id === selectedDistrict)
+                ?.wards.map((ward) => ({
+                  value: ward.id,
+                  label: ward.name,
+                })) || []
+            : []
+        )}
+        
         <Button
           type="submit"
           variant="contained"
@@ -256,6 +375,15 @@ export default function RegisterForm() {
             Đăng ký thành công!
           </Alert>
         </Snackbar>
+        {error && (
+          <Typography
+            color="error"
+            variant="body2"
+            sx={{ mt: 1, textAlign: "center" }}
+          >
+            {error}
+          </Typography>
+        )}
 
         <Typography sx={{ textAlign: "center" }}>
           Đã có tài khoản? <Button href="/user/login">Đăng nhập</Button>

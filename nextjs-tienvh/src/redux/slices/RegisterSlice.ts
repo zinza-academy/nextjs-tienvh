@@ -19,9 +19,9 @@ export interface RegisterCredentials {
   name: string;
   dob: string;
   gender: string;
-  province: string;
-  district: string;
-  ward: string;
+  province: number;
+  district: number;
+  ward: number;
 }
 
 export const register = createAsyncThunk(
