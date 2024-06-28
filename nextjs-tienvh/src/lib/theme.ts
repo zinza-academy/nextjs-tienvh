@@ -39,6 +39,16 @@ const theme = createTheme({
         },
       },
     },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          color: 'red',
+          margin: 0,
+          paddingTop: '3px',
+        },
+      },
+    },
+
   },
 });
 

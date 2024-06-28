@@ -17,7 +17,7 @@ export interface RegisterCredentials {
   email: string;
   password: string;
   name: string;
-  dob: Date;
+  dob: string;
   gender: string;
   province: string;
   district: string;

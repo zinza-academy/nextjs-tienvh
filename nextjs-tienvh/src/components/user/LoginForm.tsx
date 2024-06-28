@@ -172,6 +172,7 @@ export default function LoginForm() {
           Hoặc đăng ký tài khoản, nếu bạn chưa đăng ký!
         </Typography>
         <Button
+          href='/user/register'
           variant="outlined"
           fullWidth
           sx={{
