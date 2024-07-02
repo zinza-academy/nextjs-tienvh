@@ -44,7 +44,7 @@ function Footer() {
             sx={{
               color: '#ffffff',
               fontSize: 16,
-              fontWeight: 'Medium',
+              fontWeight: '500',
               border: '1px solid',
               padding: '8px 22px',
               borderRadius: '8px 8px 8px 0',
@@ -61,7 +61,7 @@ function Footer() {
                   color: '#ffffff',
                   border: '1px solid',
                   fontSize: 16,
-                  fontWeight: 'Medium',
+                  fontWeight: '500',
                   padding: '8px 22px',
                   borderRadius: '8px 8px 8px 0',
                   '&:hover': {
@@ -77,7 +77,7 @@ function Footer() {
                   border: '1px solid',
                   padding: '8px 22px',
                   fontSize: 16,
-                  fontWeight: 'Medium',
+                  fontWeight: '500',
                   borderRadius: '8px 8px 8px 0',
                   '&:hover': {
                     color: '#ccc',
@@ -89,7 +89,7 @@ function Footer() {
         </Box>
         <Image
              src="/img/handle_cert.png"
-             alt="logo certiicate"
+             alt="logo certificate"
              width={220}
              height={100}
           />

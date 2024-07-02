@@ -100,7 +100,7 @@ function Menu() {
         <Button 
           sx={{
             fontSize: 16,
-            fontWeight: 'Medium',
+            fontWeight: '500',
             textTransform: 'uppercase',
             bgcolor:'#ffffff',
             color: '(theme)=> theme.palette.primary.dark',

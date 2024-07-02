@@ -8,6 +8,7 @@ import { RootState, AppDispatch } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 import AppBar from '@/components/dashboard/Appbar/page';
 import Footer from '@/components/dashboard/Footer/page';
+import Summary from '@/components/dashboard/Summary/page';
 
 const HomePage = () => {
   const dispatch: AppDispatch = useDispatch();  
@@ -27,6 +28,7 @@ const HomePage = () => {
   return (
     <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100%'}}>
     <AppBar />
+    <Summary />
     <Box sx={{flex: 1}}>
     <Box sx={{ padding: 3 }}>
       <IconButton onClick={handleLoadUser} sx={{ mt: 2 }}>
