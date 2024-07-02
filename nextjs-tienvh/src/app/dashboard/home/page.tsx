@@ -6,6 +6,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { fetchUser } from '@/redux/slices/UserSlice';
 import { RootState, AppDispatch } from '@/lib/store';
 import { useRouter } from 'next/navigation';
+import AppBar from '@/components/dashboard/Appbar/page';
 
 const HomePage = () => {
   const dispatch: AppDispatch = useDispatch();  
@@ -23,6 +24,8 @@ const HomePage = () => {
   }
 
   return (
+    <>
+    <AppBar />
     <Box sx={{ padding: 3 }}>
       <IconButton onClick={handleLoadUser} sx={{ mt: 2 }}>
         <AccountCircleIcon fontSize="large" sx={{ width: '100px', height: '100px'}}/>
@@ -61,6 +64,7 @@ const HomePage = () => {
       </Button>
 
     </Box>
+    </>
   );
 };
 
