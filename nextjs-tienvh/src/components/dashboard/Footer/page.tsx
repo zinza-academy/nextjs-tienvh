@@ -12,6 +12,7 @@ function Footer() {
       paddingX: '16px',
       paddingY: '32px',
       color: '#ffffff',
+      marginTop: 'auto',
       background: theme => theme.palette.primary.main,
     }}>
       <Box sx={{display: 'flex', flexDirection: 'column', gap: '4px'}}>

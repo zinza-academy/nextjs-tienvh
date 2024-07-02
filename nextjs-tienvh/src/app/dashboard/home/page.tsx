@@ -25,8 +25,9 @@ const HomePage = () => {
   }
 
   return (
-    <>
+    <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100%'}}>
     <AppBar />
+    <Box sx={{flex: 1}}>
     <Box sx={{ padding: 3 }}>
       <IconButton onClick={handleLoadUser} sx={{ mt: 2 }}>
         <AccountCircleIcon fontSize="large" sx={{ width: '100px', height: '100px'}}/>
@@ -65,8 +66,10 @@ const HomePage = () => {
       </Button>
 
     </Box>
+    </Box>
+    
     <Footer/>
-    </>
+    </Box>
   );
 };
 

@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
-import { Box, Typography, MenuList, MenuItem, Button } from '@mui/material';
+import { Box, Typography, MenuList, MenuItem, Button, Menu as MenuMaterial } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
+import GroupIcon from '@mui/icons-material/Group';
+import EastIcon from '@mui/icons-material/East';
 function Menu() {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <MenuList sx={{ display: 'flex', flexDirection: 'row',gap: '4px' }}>
       <MenuItem component={Link} href="/">
@@ -17,12 +28,69 @@ function Menu() {
             Đăng ký tiêm
           </Typography>
       </MenuItem>
-      <MenuItem component={Link} href="#" sx={{alignItems: 'center'}}>
+     
+      <MenuItem
+        onClick={handleClick}
+        sx={{alignItems: 'center'}}
+      >
         <Typography>
           Tra cứu
         </Typography>
         <ArrowDropDownIcon />
       </MenuItem>
+      <MenuMaterial
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <Box sx={{display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px'}}>
+          <MenuItem onClick={handleClose}>
+            <Link href="#" passHref>
+              <Box sx={{display: 'flex', flexDirection: 'row', gap: '8px'}}>
+                  <Box sx={{ 
+                    backgroundColor: '#EDE7F6', 
+                    width: '40px', 
+                    height: '40px', 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                    borderRadius: '8px'
+                  }}>
+                    <GroupIcon sx={{ color: '#5E35B1' }} />
+                  </Box>
+                  <Typography variant='body1' sx={{textAlign: 'center'}}>
+                    Tra cứu chứng nhận tiêm
+                    <span style={{display: 'block', fontSize:'12px'}}>Cập nhật nhanh và chính xác nhất</span>
+                    </Typography>
+                  <EastIcon sx={{color: '#5E35B1'}}/>
+              </Box>
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+          <Link href="#" passHref>
+              <Box sx={{display: 'flex', flexDirection: 'row', gap: '8px'}}>
+                  <Box sx={{ 
+                    backgroundColor: '#F8F8F8', 
+                    width: '40px', 
+                    height: '40px', 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                    borderRadius: '8px'
+                  }}>
+                    <GroupIcon sx={{ color: '#1E88E5' }} />
+                  </Box>
+                  <Typography variant='body1' sx={{textAlign: 'center'}}>
+                    Tra cứu kết quả đăng ký
+                    <span style={{display: 'block', fontSize:'12px'}}>Cập nhật nhanh và chính xác nhất</span>
+                    </Typography>
+                  <EastIcon sx={{color: '#1E88E5'}}/>
+              </Box>
+            </Link>
+          </MenuItem>
+        </Box>
+        
+      </MenuMaterial>
       <MenuItem component={Link} href="#">
         <Typography>
           Tài liệu
