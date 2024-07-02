@@ -4,9 +4,9 @@ import React from 'react'
 
 function Summary() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', padding: '16px 36px', background: '#F7FBFE', marginTop: '24px'}}>
-      <Box sx={{display:'flex', background: '#ffffff', flexGrow: 1, paddingY: '8px',paddingX: '16px',gap: "16px", alignItems:'center'}}>
-        <Image
+    <Box sx={{ display: 'flex', flexDirection: 'row', paddingX: '36px', background: '#F7FBFE',  paddingTop: `calc(var(--header-height) + 24px)`, paddingBottom: '24px'}}>
+      <Box sx={{display:'flex', background: '#ffffff', flexGrow: 1, padding:'16px', gap: "16px", alignItems:'center'}}>
+        <Image 
               src="/img/ic_register_people_1.png"
               alt="ic_register"
               width={46}
@@ -19,7 +19,7 @@ function Summary() {
           
       </Box>
       <Divider orientation="vertical" sx={{ height: 'auto', alignSelf: 'stretch', backgroundColor: '#EEEEEE' }} />
-      <Box sx={{display:'flex', background: '#ffffff', flexGrow: 1, paddingY: '8px',paddingX: '16px',gap: "16px", alignItems:'center'}}>
+      <Box sx={{display:'flex', background: '#ffffff', flexGrow: 1, padding:'16px', gap: "16px", alignItems:'center'}}>
         <Image
               src="/img/ic_injection.png"
               alt="ic_injection"
@@ -32,7 +32,7 @@ function Summary() {
           </Box>
       </Box>
       <Divider orientation="vertical" sx={{ height: 'auto', alignSelf: 'stretch', backgroundColor: '#EEEEEE' }} />
-      <Box sx={{display:'flex', background: '#ffffff', flexGrow: 1, paddingY: '8px',paddingX: '16px',gap: "16px", alignItems:'center'}}>
+      <Box sx={{display:'flex', background: '#ffffff', flexGrow: 1, padding:'16px', gap: "16px", alignItems:'center'}}>
         <Image
               src="/img/ic_injected_people.png"
               alt="ic_register"
