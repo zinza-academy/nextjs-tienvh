@@ -7,6 +7,7 @@ import { fetchUser } from '@/redux/slices/UserSlice';
 import { RootState, AppDispatch } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 import AppBar from '@/components/dashboard/Appbar/page';
+import Footer from '@/components/dashboard/Footer/page';
 
 const HomePage = () => {
   const dispatch: AppDispatch = useDispatch();  
@@ -64,6 +65,7 @@ const HomePage = () => {
       </Button>
 
     </Box>
+    <Footer/>
     </>
   );
 };

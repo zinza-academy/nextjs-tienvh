@@ -31,9 +31,13 @@ function Menu() {
       <MenuItem component={Link} href="/user/login">
         <Button 
           sx={{
+            fontSize: 16,
+            fontWeight: 'Medium',
+            textTransform: 'uppercase',
             bgcolor:'#ffffff',
             color: '(theme)=> theme.palette.primary.dark',
             padding: '8px 22px',
+            borderRadius: '8px 8px 8px 0',
             '&:hover': {
               bgcolor: '#f0f0f0', 
               opacity: 0.9,

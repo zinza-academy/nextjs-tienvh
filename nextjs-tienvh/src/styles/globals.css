@@ -5,7 +5,7 @@
     'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
     'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
   
-    --header-height: 80px;
+  --header-height: 80px;
   --footer-height: 256px;
   --content-height: calc(100vh - var(--header-height) - var(--footer-height));
   --summary-height: 92px;
