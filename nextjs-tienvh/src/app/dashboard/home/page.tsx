@@ -10,6 +10,7 @@ import AppBar from '@/components/dashboard/Appbar/page';
 import Footer from '@/components/dashboard/Footer/page';
 import Summary from '@/components/dashboard/Summary/page';
 import LineChart from '@/components/common/LineChart';
+import SearchItem from '@/components/common/SearchItem';
 
 const HomePage = () => {
   const dispatch: AppDispatch = useDispatch();  
@@ -31,6 +32,7 @@ const HomePage = () => {
     <AppBar />
     <Summary />
     <LineChart />
+    <SearchItem />
     <Box sx={{flex: 1}}>
     <Box sx={{ padding: 3 }}>
       <IconButton onClick={handleLoadUser} sx={{ mt: 2 }}>
