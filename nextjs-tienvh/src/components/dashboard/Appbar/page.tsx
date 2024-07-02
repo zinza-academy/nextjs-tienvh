@@ -129,7 +129,6 @@ function AppBar() {
       paddingY: '15px',
       paddingX: '36px',
       color: '#ffffff',
-      overflowX: 'auto',
       background: 'var(--header-color)',
     }}>
       <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>

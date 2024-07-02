@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import AppBar from '@/components/dashboard/Appbar/page';
 import Footer from '@/components/dashboard/Footer/page';
 import Summary from '@/components/dashboard/Summary/page';
+import LineChart from '@/components/common/LineChart';
 
 const HomePage = () => {
   const dispatch: AppDispatch = useDispatch();  
@@ -26,9 +27,10 @@ const HomePage = () => {
   }
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100%'}}>
+    <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100%', background:'#ffffff'}}>
     <AppBar />
     <Summary />
+    <LineChart />
     <Box sx={{flex: 1}}>
     <Box sx={{ padding: 3 }}>
       <IconButton onClick={handleLoadUser} sx={{ mt: 2 }}>
