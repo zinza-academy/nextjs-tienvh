@@ -229,7 +229,11 @@ const VaccinationLookup = () => {
           name="province"
           control={control}
           render={({ field }) => (
-            <Select {...field} displayEmpty sx={{minWidth: '260px'}}>
+            <Select {...field} displayEmpty 
+              MenuProps={{
+                disableScrollLock: true
+              }}
+              sx={{width: '260px',minWidth: '130px'}}>
               <MenuItem value="">Chọn tỉnh</MenuItem>
               {locationData.map((province) => (
                 <MenuItem key={province.id} value={province.id.toString()}>{province.name}</MenuItem>
@@ -241,7 +245,11 @@ const VaccinationLookup = () => {
           name="district"
           control={control}
           render={({ field }) => (
-            <Select {...field} displayEmpty sx={{minWidth: '260px'}} disabled={!provinceId}>
+            <Select {...field} displayEmpty
+              MenuProps={{
+                disableScrollLock: true
+              }}
+              sx={{width: '260px',minWidth: '130px'}} disabled={!provinceId}>
               <MenuItem value="">Chọn huyện</MenuItem>
               {districts.map((district) => (
                 <MenuItem key={district.id} value={district.id.toString()}>{district.name}</MenuItem>
@@ -253,7 +261,11 @@ const VaccinationLookup = () => {
           name="ward"
           control={control}
           render={({ field }) => (
-            <Select {...field} displayEmpty sx={{minWidth: '260px'}} disabled={!districtId}>
+            <Select {...field} displayEmpty 
+              MenuProps={{
+                disableScrollLock: true
+              }}
+              sx={{width: '260px',minWidth: '130px'}} disabled={!districtId}>
               <MenuItem value="">Chọn xã</MenuItem>
               {wards.map((ward) => (
                 <MenuItem key={ward.id} value={ward.id.toString()}>{ward.name}</MenuItem>
