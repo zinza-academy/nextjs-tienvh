@@ -41,7 +41,7 @@ const LineChart = () => {
         '&': {
           boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)'
         }}}>
-      <Box sx={{paddingTop: '24px', paddingBottom: '4px', height: '510px', border: '1px solid #ee0033'}}>
+      <Box sx={{paddingTop: '24px', marginBottom: '4px', height: '510px', border: '1px solid #ee0033'}}>
         <Line options={options} data={data} />
       </Box>
       <Typography variant= 'h6'>Dữ liệu tiêm theo ngày</Typography>

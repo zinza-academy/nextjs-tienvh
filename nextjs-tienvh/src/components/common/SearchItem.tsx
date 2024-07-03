@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Select, MenuItem, TextField, Button, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination } from '@mui/material';
+import { Box, Select, MenuItem, TextField, Button, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Divider } from '@mui/material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
@@ -222,8 +222,9 @@ const VaccinationLookup = () => {
      '&': {
        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)'
      }}}>
+      <Box sx = {{marginX: '12px'}}>
       <Typography variant="h6" sx={{paddingX: '10px', marginY: '16px'}}>Tra cứu điểm tiêm theo địa bàn</Typography>
-      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'row', gap: '16px', paddingBottom: '16px', paddingX:'10px' }}>
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'row', gap: '16px', paddingBottom: '16px'}}>
         <Controller
           name="province"
           control={control}
@@ -265,8 +266,10 @@ const VaccinationLookup = () => {
           Tìm kiếm
         </Button>
       </Box>
-      
-      <TableContainer component={Paper}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Divider sx={{ height: '2px', flex: 1, backgroundColor: '#EEEEEE' }} />
+      </Box>
+      <TableContainer component={Paper} sx={{marginY: '12px'}}>
         <Table sx={{ minWidth: 650 }} aria-label="vaccination points table">
           <TableHead>
             <StyledTableRow>
@@ -308,6 +311,8 @@ const VaccinationLookup = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      </Box>
+     
     </Box>
   );
 };
