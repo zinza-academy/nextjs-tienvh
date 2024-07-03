@@ -4,7 +4,7 @@ import React from 'react'
 
 function Summary() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', paddingX: '36px', background: '#F7FBFE',  paddingTop: `calc(var(--header-height) + 24px)`, paddingBottom: '24px'}}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', paddingX: '36px', background: '#F7FBFE', paddingY: '16px'}}>
       <Box sx={{display:'flex', background: '#ffffff', flexGrow: 1, padding:'16px', gap: "16px", alignItems:'center'}}>
         <Image 
               src="/img/ic_register_people_1.png"

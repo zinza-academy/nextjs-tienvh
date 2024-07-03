@@ -6,19 +6,18 @@ import Footer from '@/components/dashboard/Footer/page';
 import Summary from '@/components/dashboard/Summary/page';
 import LineChart from '@/components/common/LineChart';
 import SearchItem from '@/components/common/SearchItem';
-
+import HomePageLayout from '@/components/layout/HomePageLayout';
 const HomePage = () => {
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh', background:'#ffffff'}}>
-     
-      <AppBar/>
-      <Box sx={{ flex: 1 }}>
+    <HomePageLayout>
+        <Box sx = {{marginTop: `var(--header-height)`}}>
         <Summary />
+        </Box>
+        
         <LineChart />
         <SearchItem />
-      </Box>
-      <Footer/>
-    </Box>
+    </HomePageLayout>
+   
   );
 };
 
