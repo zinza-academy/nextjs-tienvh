@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector} from 'react-redux';
 import { 
   Box, Typography, MenuList, MenuItem, Button, Menu as MenuMaterial, 
   IconButton, Backdrop, CircularProgress 
@@ -12,13 +12,12 @@ import EastIcon from '@mui/icons-material/East';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { clearToken } from '@/redux/slices/LoginSlice';
 import { fetchUser } from '@/redux/slices/UserSlice';
-import { RootState, AppDispatch } from '@/lib/store';
-
+import { useAppSelector, useAppDispatch } from '@/lib/store';
 
 function Menu() {
-  const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector((state: RootState) => state.login.token);
-  const { user, isLoading, error } = useSelector((state: RootState) => state.user);
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.login.token);
+  const { user, isLoading, error } = useAppSelector((state) => state.user);
   
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(null);
@@ -63,7 +62,7 @@ function Menu() {
 
   const renderUserMenu = () => {
     if (isLoading) {
-      return <CircularProgress size={24} />;
+      return <CircularProgress size={24} color='inherit'/>
     }
 
     if (token) {
@@ -162,7 +161,7 @@ function Menu() {
           Trang chủ
         </Typography>
       </MenuItem>
-      <MenuItem component={Link} href="#">
+      <MenuItem component={Link} href="/dashboard/register-injection">
         <Typography variant='body1'>
           Đăng ký tiêm
         </Typography>
