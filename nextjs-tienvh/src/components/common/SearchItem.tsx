@@ -223,7 +223,7 @@ const VaccinationLookup = () => {
        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)'
      }}}>
       <Box sx = {{marginX: '12px'}}>
-      <Typography variant="h6" sx={{paddingX: '10px', marginY: '16px'}}>Tra cứu điểm tiêm theo địa bàn</Typography>
+      <Typography variant="h6" sx={{paddingX: '10px', paddingY: '16px'}}>Tra cứu điểm tiêm theo địa bàn</Typography>
       <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'row', gap: '16px', paddingBottom: '16px'}}>
         <Controller
           name="province"

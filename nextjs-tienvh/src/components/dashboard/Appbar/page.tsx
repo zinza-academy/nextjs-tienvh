@@ -14,6 +14,7 @@ import { clearToken } from '@/redux/slices/LoginSlice';
 import { fetchUser } from '@/redux/slices/UserSlice';
 import { RootState, AppDispatch } from '@/lib/store';
 
+
 function Menu() {
   const dispatch = useDispatch<AppDispatch>();
   const token = useSelector((state: RootState) => state.login.token);
@@ -76,6 +77,7 @@ function Menu() {
             anchorEl={userMenuAnchorEl}
             open={Boolean(userMenuAnchorEl)}
             onClose={handleUserMenuClose}
+            disableScrollLock={true}
           >
             <Box sx={{ padding: 2, minWidth: 200 }}>
               <MenuItem onClick={handleUserInfoClick}>Thông tin cá nhân</MenuItem>
@@ -178,6 +180,7 @@ function Menu() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        disableScrollLock={true}
       >
         <Box sx={{display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px'}}>
           <MenuItem onClick={handleClose}>
