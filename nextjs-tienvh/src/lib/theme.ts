@@ -31,6 +31,13 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiSelect: {
+      defaultProps: {
+        MenuProps: {
+          disableScrollLock: true,
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {

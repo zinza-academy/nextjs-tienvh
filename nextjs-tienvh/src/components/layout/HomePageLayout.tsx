@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Box } from '@mui/material';
+import { Grid } from '@mui/material';
 import AppBar from '../dashboard/Appbar/page';
 import Footer from '../dashboard/Footer/page';
 interface HomePageLayoutProps {
@@ -8,14 +8,12 @@ interface HomePageLayoutProps {
 
 export default function AuthLayout({ children }: HomePageLayoutProps) {
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh', background:'#ffffff'}}>
-      <Box sx ={{paddingBottom:'24px'}}>
+    <Grid sx={{display: 'flex', flexDirection: 'column', minHeight: '100vh', background:'#ffffff'}}>
       <AppBar/>
-      </Box>
-      <Box sx={{ flex: 1 }}>
+      <Grid sx={{ flex: 1 }}>
         {children}
-      </Box>
+      </Grid>
       <Footer/>
-    </Box>
+    </Grid>
   );
 }

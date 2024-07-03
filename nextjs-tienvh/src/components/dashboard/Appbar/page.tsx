@@ -162,7 +162,7 @@ function Menu() {
           Trang chủ
         </Typography>
       </MenuItem>
-      <MenuItem component={Link} href="#">
+      <MenuItem component={Link} href="/dashboard/register-injection">
         <Typography variant='body1'>
           Đăng ký tiêm
         </Typography>
