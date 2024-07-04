@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Container, Typography, Button } from '@mui/material';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,6 +7,7 @@ import * as yup from "yup";
 import Step1 from './VaccinationRegisterStep1/page';
 import StepperItem from '@/components/common/StepperItem';
 import NavigationButtons from '@/components/common/NavigationButton';
+import Step2 from './VaccinationRegisterStep2/page';
 
 export interface VaccinationRegister {
   priorityGroup: string;
@@ -16,6 +17,7 @@ export interface VaccinationRegister {
   location: string;
   date: Date | null;
   schedule: string;
+  agreeToVaccinate?: boolean;
 }
 
 const schema = yup.object().shape({
@@ -26,6 +28,15 @@ const schema = yup.object().shape({
   location: yup.string(),
   date: yup.date().nullable().typeError("Ngày không hợp lệ"),
   schedule: yup.string(),
+  agreeToVaccinate: yup.boolean().test('is-agreed-on-step-2', 'Bạn phải đồng ý tiêm chủng để tiếp tục', function (value) {
+    const { from } = this as any;
+    const step = from && from[0] && from[0].value && from[0].value.step;
+    
+    if (step === 1) {
+      return value === true;
+    }
+    return true;
+  })
 });
 
 const defaultValues: VaccinationRegister = {
@@ -36,6 +47,7 @@ const defaultValues: VaccinationRegister = {
   location: '',
   date: null,
   schedule: '',
+  // agreeToVaccinate: false,
 };
 
 // Fake data
@@ -84,6 +96,7 @@ function RegisterInjection() {
   const { control, handleSubmit, formState: { errors }, setValue, reset } = useForm<VaccinationRegister>({
     resolver: yupResolver(schema) as any,
     defaultValues,
+    context: { step: activeStep }
   });
 
   const onSubmit: SubmitHandler<VaccinationRegister> = async (data) => {
@@ -106,6 +119,9 @@ function RegisterInjection() {
   const handleCancel = () => {
     reset();
   };
+  useEffect(() => {
+    setValue('step' as any, activeStep, { shouldValidate: true });
+  }, [activeStep, setValue]);
   const renderStep = () => {
     switch (activeStep) {
       case 0:
@@ -120,6 +136,8 @@ function RegisterInjection() {
           locations={locations}
           schedules={schedules}
         />;
+      case 1:
+        return <Step2 control={control} errors={errors}  />;  
 
       default:
         return null;
