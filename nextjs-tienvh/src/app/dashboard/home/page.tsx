@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 
 import LineChart from '@/components/common/LineChart';
 import SearchItem from '@/components/common/SearchItem';
@@ -10,9 +10,10 @@ const HomePage = () => {
   return (
     <HomePageLayout>
         <Grid sx = {{marginTop: `var(--header-height)`}}>
-          <Grid sx = {{paddingTop: '24px'}}>
+          <Grid sx={{paddingTop: '24px'}}>
           <Summary />
           </Grid>
+          
         </Grid>
         <LineChart />
         <SearchItem />
