@@ -5,11 +5,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Step1 from './VaccinationRegisterStep1/page';
-import EastIcon from "@mui/icons-material/East";
-import WestIcon from "@mui/icons-material/West";
 import StepperItem from '@/components/common/StepperItem';
 import NavigationButtons from '@/components/common/NavigationButton';
-
 
 export interface VaccinationRegister {
   priorityGroup: string;
@@ -90,7 +87,6 @@ function RegisterInjection() {
   });
 
   const onSubmit: SubmitHandler<VaccinationRegister> = async (data) => {
-    console.log("data:", data);
     handleNextStep();
   };
 
@@ -103,9 +99,13 @@ function RegisterInjection() {
   const handleBackStep = () => {
     if (activeStep > 0) {
       setActiveStep((prevStep) => prevStep - 1);
+    } else {
+      handleCancel();
     }
   };
-
+  const handleCancel = () => {
+    reset();
+  };
   const renderStep = () => {
     switch (activeStep) {
       case 0:
