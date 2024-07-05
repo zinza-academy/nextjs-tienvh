@@ -4,10 +4,10 @@ import { Box, Container, Typography, Button } from '@mui/material';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import Step1 from './VaccinationRegisterStep1/page';
-import StepperItem from '@/components/common/StepperItem';
+import PersonalInfor from './PersonalInfor/page';
+import StepperItem, { StepperStep } from '@/components/common/StepperItem';
 import NavigationButtons from '@/components/common/NavigationButton';
-import Step2 from './VaccinationRegisterStep2/page';
+import ConsentForm from './ConsentForm/page';
 
 export interface VaccinationRegister {
   priorityGroup: string;
@@ -47,7 +47,6 @@ const defaultValues: VaccinationRegister = {
   location: '',
   date: null,
   schedule: '',
-  // agreeToVaccinate: false,
 };
 
 // Fake data
@@ -92,7 +91,7 @@ const steps = [
 ];
 
 function RegisterInjection() {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState<StepperStep>(StepperStep.PERSONAL_INFO);
   const { control, handleSubmit, formState: { errors }, setValue, reset } = useForm<VaccinationRegister>({
     resolver: yupResolver(schema) as any,
     defaultValues,
@@ -104,28 +103,31 @@ function RegisterInjection() {
   };
 
   const handleNextStep = () => {
-    if (activeStep < steps.length - 1) {
+    if (activeStep < StepperStep.COMPLETED) {
       setActiveStep((prevStep) => prevStep + 1);
     }
   };
 
   const handleBackStep = () => {
-    if (activeStep > 0) {
+    if (activeStep > StepperStep.PERSONAL_INFO) {
       setActiveStep((prevStep) => prevStep - 1);
     } else {
       handleCancel();
     }
   };
+
   const handleCancel = () => {
     reset();
   };
+
   useEffect(() => {
     setValue('step' as any, activeStep, { shouldValidate: true });
   }, [activeStep, setValue]);
+
   const renderStep = () => {
     switch (activeStep) {
-      case 0:
-        return <Step1 
+      case StepperStep.PERSONAL_INFO:
+        return <PersonalInfor 
           control={control} 
           errors={errors} 
           setValue={setValue}
@@ -136,9 +138,8 @@ function RegisterInjection() {
           locations={locations}
           schedules={schedules}
         />;
-      case 1:
-        return <Step2 control={control} errors={errors}  />;  
-
+      case StepperStep.CONSENT_FORM:
+        return <ConsentForm control={control} errors={errors} />;  
       default:
         return null;
     }
@@ -153,12 +154,11 @@ function RegisterInjection() {
           <NavigationButtons
             onBack={handleBackStep}
             onContinue={handleSubmit(onSubmit)}
-            isFirstStep={activeStep === 0}
-            isLastStep={activeStep === steps.length - 1}
+            isFirstStep={activeStep === StepperStep.PERSONAL_INFO}
+            isLastStep={activeStep === StepperStep.COMPLETED}
           />
         </Container>
       </Box>
-
     </form>
   );
 }

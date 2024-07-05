@@ -4,8 +4,13 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 
+export enum StepperStep {
+  PERSONAL_INFO,
+  CONSENT_FORM,
+  COMPLETED
+}
 interface StepperItemProps {
-  step: number;
+  step: StepperStep;
 }
 
 function StepperItem({ step }: StepperItemProps) {
@@ -22,7 +27,7 @@ function StepperItem({ step }: StepperItemProps) {
       </Grid>
       <Grid sx={{paddingY: '80px', textAlign:'center', display:'flex', justifyContent:'center'}}>
         <Stepper activeStep={step} alternativeLabel sx={{width: '604px', marginY:'8px'}}>
-          {steps.map((label) => (
+          {steps.map((label, index) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
             </Step>

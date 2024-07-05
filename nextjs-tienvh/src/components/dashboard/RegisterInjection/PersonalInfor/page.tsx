@@ -28,7 +28,7 @@ const StyledTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   },
 }));
 
-interface Step1Props {
+interface PersonalInforProps {
   control: any;
   errors: any;
   setValue: any;
@@ -40,7 +40,7 @@ interface Step1Props {
   schedules: { id: number; time: string }[];
 }
 
-function Step1({ 
+function PersonalInfor({ 
   control, 
   errors,
   setValue,
@@ -50,7 +50,7 @@ function Step1({
   workPlaces, 
   locations, 
   schedules 
-}: Step1Props) {
+}: PersonalInforProps) {
   return (
     <>
       <Box
@@ -387,4 +387,4 @@ function Step1({
   )
 }
 
-export default Step1
+export default PersonalInfor

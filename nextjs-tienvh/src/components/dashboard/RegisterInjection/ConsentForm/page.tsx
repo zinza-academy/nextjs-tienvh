@@ -8,11 +8,11 @@ import { Controller, FieldErrors } from 'react-hook-form';
 import { Control } from 'react-hook-form';
 import { VaccinationRegister } from '../page';
 
-interface Step2Props {
+interface ConsentFormProps {
   control: Control<VaccinationRegister>;
   errors: FieldErrors<VaccinationRegister>;
 }
-function Step2({ control, errors }: Step2Props) {
+function ConsentForm({ control, errors }: ConsentFormProps) {
   return (
     <Box  sx= {{ display:'flex',flexDirection:'column', gap:'16px',marginX:'36px' }}>
       <Box sx={{display:'flex', flexDirection:'row', gap: '10px',alignItems:'center'}}>
@@ -75,4 +75,4 @@ function Step2({ control, errors }: Step2Props) {
   )
 }
 
-export default Step2
+export default ConsentForm
