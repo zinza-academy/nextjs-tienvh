@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { 
   Box, Typography, MenuList, MenuItem, Button, Menu as MenuMaterial, 
   IconButton, Backdrop, CircularProgress 
@@ -13,6 +13,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { clearToken } from '@/redux/slices/LoginSlice';
 import { fetchUser } from '@/redux/slices/UserSlice';
 import { useAppSelector, useAppDispatch } from '@/lib/store';
+
+
 
 function Menu() {
   const dispatch = useAppDispatch();
@@ -62,7 +64,7 @@ function Menu() {
 
   const renderUserMenu = () => {
     if (isLoading) {
-      return <CircularProgress size={24} color='inherit'/>
+      return <CircularProgress size={24} />;
     }
 
     if (token) {
