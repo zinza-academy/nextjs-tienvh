@@ -47,6 +47,7 @@ const defaultValues: VaccinationRegister = {
   location: '',
   date: null,
   schedule: '',
+  agreeToVaccinate: false,
 };
 
 // Fake data

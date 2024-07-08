@@ -31,6 +31,29 @@ const theme = createTheme({
     },
   },
   components: {
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          height: '64px', // Thiết lập chiều cao cho Tabs
+        },
+        indicator: {
+          backgroundColor: 'rgb(0,0,0,87%)',
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          minWidth: 120, 
+          marginRight: 16, 
+          fontSize: 16, 
+          color:'#6e6d7a',
+          '&.Mui-selected': {
+            color: 'rgb(0,0,0)',
+          },
+        },
+      },
+    },
     MuiSelect: {
       defaultProps: {
         MenuProps: {
