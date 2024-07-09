@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { 
   Box, Typography, MenuList, MenuItem, Button, Menu as MenuMaterial, 
   IconButton, Backdrop, CircularProgress 
@@ -185,7 +184,7 @@ function Menu() {
       >
         <Box sx={{display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px'}}>
           <MenuItem onClick={handleClose}>
-            <Link href="#" passHref>
+            <Link href="/dashboard/lookup/certificate" passHref>
               <Box sx={{display: 'flex', flexDirection: 'row', gap: '8px'}}>
                 <Box sx={{ 
                   backgroundColor: '#EDE7F6', 

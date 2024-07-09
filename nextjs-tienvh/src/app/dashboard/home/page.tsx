@@ -13,7 +13,6 @@ const HomePage = () => {
           <Grid sx={{paddingTop: '24px'}}>
           <Summary />
           </Grid>
-          
         </Grid>
         <LineChart />
         <SearchItem />
