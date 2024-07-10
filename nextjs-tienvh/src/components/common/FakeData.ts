@@ -8,3 +8,15 @@ export interface RegistrationRow {
   'cmt': string,
   'status': ApprovalStatus
 }
+
+export interface UserInfo {
+  cmt: string;
+  email: string;
+  password: string;
+  name: string;
+  dob: string;
+  gender: number;
+  province: number;
+  district: number;
+  ward: number;
+}
