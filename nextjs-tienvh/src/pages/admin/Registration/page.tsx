@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, FormControl, MenuItem, Select, TextField } from "@mui/material";
 import {
   Table,
@@ -15,23 +14,22 @@ import { RegistrationRow } from '@/components/common/FakeData';
 import { ApprovalStatus } from '@/components/common/enum';
 import { Controller, useForm } from 'react-hook-form';
 
-
 const initialRows: RegistrationRow[] = [
   {
-    stt: 1,
-    hovaten: "Nguyễn Văn A",
-    ngaysinh: "01/01/1980",
-    gioitinh: "Nam",
-    sochungminh: "0123456789",
-    trangthai: ApprovalStatus.PendingApproval,
+    id: 1,
+    name: "Nguyễn Văn A",
+    dob: "01/01/1980",
+    gender: "Nam",
+    cmt: "0123456789",
+    status: ApprovalStatus.PendingApproval,
   },
   {
-    stt: 2,
-    hovaten: "Trần Thị B",
-    ngaysinh: "02/02/1990",
-    gioitinh: "Nữ",
-    sochungminh: "9876543210",
-    trangthai: ApprovalStatus.PendingApproval,
+    id: 2,
+    name: "Trần Thị B",
+    dob: "02/02/1990",
+    gender: "Nữ",
+    cmt: "9876543210",
+    status: ApprovalStatus.PendingApproval,
   },
 ];
 
@@ -47,15 +45,15 @@ function ApproveRegistration() {
   const onSubmit = (data: { name: string; idNumber: string }) => {
     const { name, idNumber } = data;
     const filteredRows = initialRows.filter((row) =>
-      row.hovaten.toLowerCase().includes(name.toLowerCase()) &&
-      row.sochungminh.includes(idNumber)
+      row.name.toLowerCase().includes(name.toLowerCase()) &&
+      row.cmt.includes(idNumber)
     );
     setRows(filteredRows);
   };
 
-  const handleStatusChange = (stt: number, newStatus: ApprovalStatus) => {
+  const handleStatusChange = (id: number, newStatus: ApprovalStatus) => {
     setRows(rows.map(row => 
-      row.stt === stt ? { ...row, trangthai: newStatus } : row
+      row.id === id ? { ...row, status: newStatus } : row
     ));
   };
 
@@ -95,22 +93,22 @@ function ApproveRegistration() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.stt}>
-                <TableCell component="th" scope="row" align="center">{row.stt}</TableCell>
-                <TableCell align="center">{row.hovaten}</TableCell>
-                <TableCell align="center">{row.ngaysinh}</TableCell>
-                <TableCell align="center">{row.gioitinh}</TableCell>
-                <TableCell align="center">{row.sochungminh}</TableCell>
+            {rows.sort((a, b) => a.id - b.id).map((row, index) => (
+              <TableRow key={row.id}>
+                <TableCell component="th" scope="row" align="center">{index + 1}</TableCell>
+                <TableCell align="center">{row.name}</TableCell>
+                <TableCell align="center">{row.dob}</TableCell>
+                <TableCell align="center">{row.gender}</TableCell>
+                <TableCell align="center">{row.cmt}</TableCell>
                 <TableCell align="center">
                   <FormControl fullWidth>
                     <Select
-                      value={row.trangthai}
-                      onChange={(e) => handleStatusChange(row.stt, e.target.value as ApprovalStatus)}
+                      value={row.status}
+                      onChange={(e) => handleStatusChange(row.id, e.target.value as ApprovalStatus)}
                       sx={{ height: 'auto', borderRadius: '30px', background: '#E8EAF6', color: '#000000' }}
                     >
                       <MenuItem value={ApprovalStatus.PendingApproval}>Chờ phê duyệt</MenuItem>
-                      <MenuItem value={ApprovalStatus.Approved}>Phê duyệt</MenuItem>
+                      <MenuItem value={ApprovalStatus.Approved}>Đăng ký thành công</MenuItem>
                       <MenuItem value={ApprovalStatus.Rejected}>Không phê duyệt</MenuItem>
                     </Select>
                   </FormControl>
@@ -124,5 +122,4 @@ function ApproveRegistration() {
   );
 }
 
-
-export default ApproveRegistration
+export default ApproveRegistration;

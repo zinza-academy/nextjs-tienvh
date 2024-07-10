@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button } from "@mui/material";
 import {
   Table,
@@ -12,32 +12,56 @@ import {
 import { RegistrationRow } from '@/components/common/FakeData';
 import { ApprovalStatus } from '@/components/common/enum';
 
-const rows: RegistrationRow[] = [
+const getLabelFromApprovalStatus = (status: ApprovalStatus): string => {
+  switch (status) {
+    case ApprovalStatus.PendingApproval:
+      return "Chờ phê duyệt";
+    case ApprovalStatus.Approved:
+      return "Đăng ký thành công";
+    case ApprovalStatus.Rejected:
+      return "Không phê duyệt";
+    default:
+      return "";
+  }
+}
+
+const initialRows: RegistrationRow[] = [
   {
-    stt: 1,
-    hovaten: "Nguyễn Văn A",
-    ngaysinh: "01/01/1980",
-    gioitinh: "Nam",
-    sochungminh: "0123456789",
-    trangthai: ApprovalStatus.Approved,
+    id: 1,
+    name: "Nguyễn Văn A",
+    dob: "01/01/1980",
+    gender: "Nam",
+    cmt: "0123456789",
+    status: ApprovalStatus.PendingApproval,
   },
   {
-    stt: 2,
-    hovaten: "Trần Thị B",
-    ngaysinh: "02/02/1990",
-    gioitinh: "Nữ",
-    sochungminh: "9876543210",
-    trangthai: ApprovalStatus.PendingApproval,
+    id: 2,
+    name: "Trần Thị B",
+    dob: "02/02/1990",
+    gender: "Nữ",
+    cmt: "9876543210",
+    status: ApprovalStatus.PendingApproval,
   },
 ];
 
+const loadData = (): RegistrationRow[] => {
+  return initialRows;
+};
+
 function RegistrationResult() {
+  const [rows, setRows] = useState<RegistrationRow[]>([]);
+
+  useEffect(() => {
+    const loadedData = loadData();
+    setRows(loadedData);
+  }, []);
+
   return (
     <Box sx={{paddingTop:'48px', marginX:'36px'}}>
       <TableContainer component={Paper}>
-        <Table  sx={{ minWidth: 350 }} aria-label="vaccination table">
+        <Table sx={{ minWidth: 350 }} aria-label="vaccination table">
           <TableHead>
-          <TableRow sx={{ backgroundColor: "#eeeeee" }}>
+            <TableRow sx={{ backgroundColor: "#eeeeee" }}>
               <TableCell align="center" sx={{ fontWeight: "bold", width: '5%' }}>STT</TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold", width: '19%' }}>Họ và tên</TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold", width: '19%' }}>Ngày sinh</TableCell>
@@ -47,15 +71,15 @@ function RegistrationResult() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.stt} >
-                <TableCell component="th" scope="row" align="center">{row.stt}</TableCell>
-                <TableCell align="center">{row.hovaten}</TableCell>
-                <TableCell align="center">{row.ngaysinh}</TableCell>
-                <TableCell align="center">{row.gioitinh}</TableCell>
-                <TableCell align="center">{row.sochungminh}</TableCell>
-                <TableCell align="center" >
-                  <Button disabled  sx={{
+            {rows.sort((a, b) => a.id - b.id).map((row, index) => (
+              <TableRow key={row.id}>
+                <TableCell component="th" scope="row" align="center">{index + 1}</TableCell>
+                <TableCell align="center">{row.name}</TableCell>
+                <TableCell align="center">{row.dob}</TableCell>
+                <TableCell align="center">{row.gender}</TableCell>
+                <TableCell align="center">{row.cmt}</TableCell>
+                <TableCell align="center">
+                  <Button disabled sx={{
                     border: '1px solid',
                     borderRadius: '30px',
                     background: '#E8EAF6',
@@ -70,9 +94,9 @@ function RegistrationResult() {
                       color: '#000000',
                     },
                   }}>
-                  {row.trangthai}
+                    {getLabelFromApprovalStatus(row.status)}
                   </Button>
-                  </TableCell>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -82,4 +106,4 @@ function RegistrationResult() {
   );
 }
 
-export default RegistrationResult
+export default RegistrationResult;
