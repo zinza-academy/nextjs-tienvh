@@ -9,15 +9,17 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import { RegistrationRow } from '@/components/common/FakeData';
+import { ApprovalStatus } from '@/components/common/enum';
 
-const rows = [
+const rows: RegistrationRow[] = [
   {
     stt: 1,
     hovaten: "Nguyễn Văn A",
     ngaysinh: "01/01/1980",
     gioitinh: "Nam",
     sochungminh: "0123456789",
-    trangthai: "Đăng ký thành công",
+    trangthai: ApprovalStatus.Approved,
   },
   {
     stt: 2,
@@ -25,7 +27,7 @@ const rows = [
     ngaysinh: "02/02/1990",
     gioitinh: "Nữ",
     sochungminh: "9876543210",
-    trangthai: "Đăng ký thành công",
+    trangthai: ApprovalStatus.PendingApproval,
   },
 ];
 
@@ -53,10 +55,23 @@ function RegistrationResult() {
                 <TableCell align="center">{row.gioitinh}</TableCell>
                 <TableCell align="center">{row.sochungminh}</TableCell>
                 <TableCell align="center" >
-                  <Button sx={{ border:'1px solid', borderRadius:'30px', background:'#E8EAF6', color: '#000000', height:'auto', marginY:'12px',paddingY:'0px 4px', width:'100%'}}>
+                  <Button disabled  sx={{
+                    border: '1px solid',
+                    borderRadius: '30px',
+                    background: '#E8EAF6',
+                    color: '#000000',
+                    height: 'auto',
+                    marginY: '12px',
+                    paddingY: '0px 4px',
+                    width: '100%',
+                    '&.Mui-disabled': {
+                      border: '1px solid', 
+                      background: '#E8EAF6',
+                      color: '#000000',
+                    },
+                  }}>
                   {row.trangthai}
                   </Button>
-                  
                   </TableCell>
               </TableRow>
             ))}

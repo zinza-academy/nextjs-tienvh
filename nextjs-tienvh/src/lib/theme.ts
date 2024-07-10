@@ -34,24 +34,36 @@ const theme = createTheme({
     MuiTabs: {
       styleOverrides: {
         root: {
-          height: '64px', // Thiết lập chiều cao cho Tabs
+          height: '64px', // Set height for Tabs
         },
         indicator: {
-          backgroundColor: 'rgb(0,0,0,87%)',
+          backgroundColor: 'rgba(0,0,0,0.87)',
         },
       },
     },
     MuiTab: {
       styleOverrides: {
         root: {
-          minWidth: 120, 
-          marginRight: 16, 
-          fontSize: 16, 
-          color:'#6e6d7a',
+          minWidth: 120,
+          marginRight: 16,
+          fontSize: 16,
+          color: '#6e6d7a',
           '&.Mui-selected': {
-            color: 'rgb(0,0,0)',
+            color: 'rgba(0,0,0,0.87)',
           },
         },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        root: {
+          '& .MuiDialog-scrollPaper': {
+            overflowY: 'visible',
+          },
+        },
+      },
+      defaultProps: {
+        disableScrollLock: true,
       },
     },
     MuiSelect: {
@@ -78,7 +90,6 @@ const theme = createTheme({
         },
       },
     },
-
   },
 });
 

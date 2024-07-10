@@ -2,7 +2,7 @@
 import React from 'react'
 import HomePageLayout from '@/components/layout/HomePageLayout'
 import { Grid } from '@mui/material'
-import RegisterInjection from '@/components/dashboard/RegisterInjection/page';
+import RegisterInjection from '@/pages/dashboard/RegisterInjection/page';
 function RegisterForInjection() {
   return (
     <HomePageLayout>
