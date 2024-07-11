@@ -206,7 +206,7 @@ function Menu() {
             </Link>
           </MenuItem>
           <MenuItem onClick={handleClose}>
-            <Link href="#" passHref>
+            <Link href="/dashboard/lookup/registration-result" passHref>
               <Box sx={{display: 'flex', flexDirection: 'row', gap: '8px'}}>
                 <Box sx={{ 
                   backgroundColor: '#F8F8F8', 

@@ -2,8 +2,8 @@
 import React from 'react'
 import { Grid } from '@mui/material'
 import LookupLayout from '@/components/layout/LookupLayout';
-import LookupComponent from '@/components/dashboard/Lookup/page';
-import Certificate from '@/components/dashboard/Lookup/Certificate/page';
+import LookupComponent from '@/pages/dashboard/Lookup/page';
+import Certificate from '@/pages/dashboard/Lookup/Certificate/page';
 function Lookup() {
   return (
     <LookupLayout>

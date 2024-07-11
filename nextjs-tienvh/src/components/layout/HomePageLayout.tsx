@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Grid } from '@mui/material';
-import AppBar from '../dashboard/Appbar/page';
-import Footer from '../dashboard/Footer/page';
+import AppBar from '../../pages/dashboard/Appbar/page';
+import Footer from '../../pages/dashboard/Footer/page';
 interface HomePageLayoutProps {
   children: ReactNode;
 }
