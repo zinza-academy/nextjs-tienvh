@@ -2,7 +2,6 @@ version: '3'
 services:
   front-end:
     build: ./nextjs-tienvh
-    image: nextjs-tienvh:v0.0.1
     volumes:
       - ./nextjs-tienvh:/usr/src/app
     ports:
