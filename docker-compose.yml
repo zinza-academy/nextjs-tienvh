@@ -1,0 +1,8 @@
+version: '3'
+services:
+  front-end:
+    build: ./nextjs-tienvh
+    volumes:
+      - ./nextjs-tienvh:/usr/src/app
+    ports:
+      - 5001:3000  

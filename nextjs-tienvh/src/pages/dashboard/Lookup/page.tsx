@@ -14,7 +14,7 @@ function LookupComponent() {
   }, [pathname]);
 
   return (
-    <div style={{margin: '0 36px'}}>
+    <Box sx={{margin: '0 36px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', position: 'relative'}}>
         <Tabs value={value}>
           <Tab label="Chứng nhận tiêm chủng" component={Link} href="/dashboard/lookup/certificate" sx={{ paddingY: '16px' }} />
@@ -23,7 +23,7 @@ function LookupComponent() {
         </Tabs>
         <Divider sx={{ position: 'absolute', height: '3px', bottom: 0, width: '100%', boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.2)' }} />
       </Box>
-    </div>
+    </Box>
   );
 }
 
