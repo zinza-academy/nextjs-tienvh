@@ -1,7 +1,6 @@
-import { IsString, IsEmail, MinLength, IsNumberString, Length, IsNotEmpty, IsAlphanumeric, Matches, IsDate, IsNumber, IsDateString } from 'class-validator';
+import { IsString, IsEmail, MinLength, IsNumberString, Length, IsNotEmpty, IsAlphanumeric, Matches, IsDate, IsNumber, IsDateString, IsOptional } from 'class-validator';
 
-export class CreateUserDto {
-
+export class UserDto {
   @IsNumberString()
   @Matches(/^\d{9}$|^\d{12}$/,{message: 'CMND/CCCD phải có 9 hoặc 12 số'})
   @IsNotEmpty({message: 'CMND/CCCD không được để trống'})
@@ -43,7 +42,47 @@ export class CreateUserDto {
 
 }
 
-export class ListUsersDto {
+export class UpdateUserDto {
+  @IsOptional()
+  @IsNumberString()
+  @Matches(/^\d{9}$|^\d{12}$/,{message: 'CMND/CCCD phải có 9 hoặc 12 số'})
+  cmt?: string;
+
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(8, {message:'Mật khẩu phải có ít nhất 8 kí tự'})
+  @Matches(/^[^\s]+$/, { message: 'Mật khẩu không được chứa dấu cách' })
+  password?: string;
+
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsDateString()
+  dob?: Date;
+
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @IsOptional()
+  @IsNumber()
+  province?: number;
+
+  @IsOptional()
+  @IsNumber()
+  district?: number;
+
+  @IsOptional()
+  @IsNumber()
+  ward?: number;
+}
+export class ReceiveUserDto {
   id: number;
   cmt: string;
   email: string;
