@@ -33,6 +33,7 @@ export class UserService {
 
   async update(id: number, updateUser: UpdateUserDto): Promise<ApiResponse<ReceiveUserDto>> {
     const existingUser = await this.userRepository.findOneBy({ id });
+    
     if (!existingUser) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }

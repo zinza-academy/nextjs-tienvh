@@ -10,7 +10,7 @@ export class UserMapper {
   static toUpdateEntity(existingUser: User, dto: UpdateUserDto): User {
     return Object.assign(existingUser, dto);
   }
-  
+
   static toDto(entity: User): ReceiveUserDto {
     const dto = new ReceiveUserDto();
     dto.id = entity.id;
@@ -19,9 +19,9 @@ export class UserMapper {
     dto.name = entity.name;
     dto.dob = entity.dob;
     dto.gender = entity.gender;
-    dto.province = entity.province;
-    dto.district = entity.district;
-    dto.ward = entity.ward;
+    dto.province_id = entity.province_id;
+    dto.district_id = entity.district_id;
+    dto.ward_id = entity.ward_id;
     return dto;
   }
 }

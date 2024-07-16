@@ -4,7 +4,7 @@ import { ReceiveUserDto, UpdateUserDto, UserDto } from './dto/user.dto';
 import { ApiResponse } from 'src/common/utils/response.util';
 
 @Controller('users')
-export class UserController {
+export class UsersController {
   constructor(private readonly userService: UserService) {}
 
   @Get()

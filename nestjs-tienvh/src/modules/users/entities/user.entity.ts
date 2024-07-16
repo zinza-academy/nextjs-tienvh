@@ -1,35 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column, Table } from 'typeorm';
-
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 20 })
   cmt: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @Column()
+  @Column({ type: 'date' })
   dob: Date;
 
-  @Column()
+  @Column({ type: 'enum', enum: ['male', 'female', 'other'] })
   gender: string;
 
-  @Column({name:"province_id"})
-  province: number;
+  @Column({ name: "province_id", type: 'int' })
+  province_id: number;
 
-  @Column({name:"district_id"})
-  district: number;
+  @Column({ name: "district_id", type: 'int' })
+  district_id: number;
 
-  @Column({name:"ward_id"})
-  ward: number;
-  
+  @Column({ name: "ward_id", type: 'int' })
+  ward_id: number;
 }

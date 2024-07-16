@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MinLength, IsNumberString, Length, IsNotEmpty, IsAlphanumeric, Matches, IsDate, IsNumber, IsDateString, IsOptional } from 'class-validator';
+import { IsString, IsEmail, MinLength, IsNumberString, Length, IsNotEmpty, IsAlphanumeric, Matches, IsDate, IsNumber, IsDateString, IsOptional, MaxLength, IsEnum, IsInt, IsPositive, IsIn } from 'class-validator';
 
 export class UserDto {
   @IsNumberString()
@@ -18,6 +18,8 @@ export class UserDto {
 
   @IsString()
   @IsNotEmpty({message: 'Họ và tên không được để trống'})
+  @MinLength(2, {message: 'Họ và tên phải có ít nhất 2 ký tự'})
+  @MaxLength(50, {message: 'Họ và tên không được vượt quá 50 ký tự'})
   name: string;
 
   @IsDateString()
@@ -26,19 +28,26 @@ export class UserDto {
 
   @IsString()
   @IsNotEmpty({message: 'Giới tính không được để trống'})
+  @IsEnum(['male', 'female', 'other'], {message: 'Giới tính phải là một trong các giá trị: male, female, other'})
   gender: string;
 
   @IsNumber()
   @IsNotEmpty({message: 'Tỉnh/Thành phố không được để trống'})
-  province: number;
+  @IsInt({message: 'Mã tỉnh/thành phố phải là số nguyên'})
+  @IsPositive({message: 'Mã tỉnh/thành phố phải là số dương'})
+  province_id: number;
 
   @IsNumber()
   @IsNotEmpty({message: 'Quận/Huyện không được để trống'})
-  district: number;
+  @IsInt({message: 'Mã Quận/Huyện phải là số nguyên'})
+  @IsPositive({message: 'Mã Quận/Huyện phải là số dương'})
+  district_id: number;
 
   @IsNumber()
   @IsNotEmpty({message: 'Xã/Phường không được để trống'})
-  ward: number;
+  @IsInt({message: 'Mã Xã/Phường phải là số nguyên'})
+  @IsPositive({message: 'Mã Xã/Phường phải là số dương'})
+  ward_id: number;
 
 }
 
@@ -60,6 +69,8 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsString()
+  @MinLength(2, {message: 'Họ và tên phải có ít nhất 2 ký tự'})
+  @MaxLength(50, {message: 'Họ và tên không được vượt quá 50 ký tự'})
   name?: string;
 
   @IsOptional()
@@ -68,19 +79,26 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsString()
+  @IsEnum(['male', 'female', 'other'], {message: 'Giới tính phải là một trong các giá trị: male, female, other'})
   gender?: string;
 
   @IsOptional()
   @IsNumber()
-  province?: number;
+  @IsInt({message: 'Mã tỉnh/thành phố phải là số nguyên'})
+  @IsPositive({message: 'Mã tỉnh/thành phố phải là số dương'})
+  province_id?: number;
 
   @IsOptional()
   @IsNumber()
-  district?: number;
+  @IsInt({message: 'Mã Quận/Huyện phải là số nguyên'})
+  @IsPositive({message: 'Mã Quận/Huyện phải là số dương'})
+  district_id?: number;
 
   @IsOptional()
   @IsNumber()
-  ward?: number;
+  @IsInt({message: 'Mã Xã/Phường phải là số nguyên'})
+  @IsPositive({message: 'Mã Xã/Phường phải là số dương'})
+  ward_id?: number;
 }
 export class ReceiveUserDto {
   id: number;
@@ -89,7 +107,7 @@ export class ReceiveUserDto {
   name: string;
   dob: Date;
   gender: string;
-  province: number;
-  district: number;
-  ward: number;
+  province_id: number;
+  district_id: number;
+  ward_id: number;
 }

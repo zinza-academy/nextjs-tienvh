@@ -10,8 +10,6 @@ import { databaseConfig } from './config/database/database.config';
       envFilePath: '.env',
       load: [databaseConfig],
     }),
-
-    
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => 
