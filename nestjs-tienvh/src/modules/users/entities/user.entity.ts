@@ -1,3 +1,4 @@
+import { Gender } from 'src/common/enums/gender.enum';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class User {
@@ -19,8 +20,8 @@ export class User {
   @Column({ type: 'date' })
   dob: Date;
 
-  @Column({ type: 'enum', enum: ['male', 'female', 'other'] })
-  gender: string;
+  @Column({ type: 'enum', enum: Gender, default: Gender.MALE})
+  gender: Gender;
 
   @Column({ name: "province_id", type: 'int' })
   province_id: number;

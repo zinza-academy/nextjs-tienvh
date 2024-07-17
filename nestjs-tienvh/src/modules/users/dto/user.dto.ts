@@ -1,4 +1,5 @@
 import { IsDateString, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsPositive, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { Gender } from 'src/common/enums/gender.enum';
 
 export class UserDto {
   @IsNumberString()
@@ -29,8 +30,8 @@ export class UserDto {
 
   @IsString()
   @IsNotEmpty({message: 'Giới tính không được để trống'})
-  @IsEnum(['male', 'female', 'other'], {message: 'Giới tính phải là một trong các giá trị: male, female, other'})
-  gender: string;
+  @IsEnum(Gender, {message: 'Giới tính phải là một trong các giá trị: male, female, other'})
+  gender: Gender;
 
   @IsNumber()
   @IsNotEmpty({message: 'Tỉnh/Thành phố không được để trống'})
@@ -81,8 +82,8 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsString()
-  @IsEnum(['male', 'female', 'other'], {message: 'Giới tính phải là một trong các giá trị: male, female, other'})
-  gender?: string;
+  @IsEnum(Gender, {message: 'Giới tính phải là một trong các giá trị: male, female, other'})
+  gender?: Gender;
 
   @IsOptional()
   @IsNumber()
