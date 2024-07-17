@@ -1,6 +1,7 @@
 import { ApiResponse, createResponse } from './../../common/utils/response.util';
 import {
   ConflictException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -20,7 +21,7 @@ export class UserService {
   async findAll(): Promise<ApiResponse<ReceiveUserDto[]>> {
     const users = await this.userRepository.find();
     const userDtos = users.map((user) => UserMapper.toDto(user));
-    return createResponse(userDtos, 'Users retrieved successfully', 200);
+    return createResponse(userDtos, 'Users retrieved successfully', HttpStatus.OK);
   }
 
   async create(createUser: UserDto): Promise<ApiResponse<ReceiveUserDto>> {
@@ -28,7 +29,7 @@ export class UserService {
     const userEntity = UserMapper.toCreateEntity(createUser);
     const savedUser = await this.userRepository.save(userEntity);
     const userDto = UserMapper.toDto(savedUser);
-    return createResponse(userDto, 'User created successfully', 201);
+    return createResponse(userDto, 'User created successfully', HttpStatus.CREATED);
   }
 
   async update(id: number, updateUser: UpdateUserDto): Promise<ApiResponse<ReceiveUserDto>> {
@@ -48,7 +49,7 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(updatedUserEntity);
     const userDto = UserMapper.toDto(savedUser);
-    return createResponse(userDto, 'User updated successfully', 200);
+    return createResponse(userDto, 'User updated successfully', HttpStatus.OK);
   }
 
   async remove(id: number): Promise<ApiResponse<null>> {
@@ -56,7 +57,7 @@ export class UserService {
     if (result.affected === 0) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
-    return createResponse(null, 'User deleted successfully', 200);
+    return createResponse(null, 'User deleted successfully', HttpStatus.OK);
   }
 
   private async checkEmailExists(email: string): Promise<void> {

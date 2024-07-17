@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MinLength, IsNumberString, Length, IsNotEmpty, IsAlphanumeric, Matches, IsDate, IsNumber, IsDateString, IsOptional, MaxLength, IsEnum, IsInt, IsPositive, IsIn } from 'class-validator';
+import { IsDateString, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsPositive, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class UserDto {
   @IsNumberString()
@@ -12,6 +12,7 @@ export class UserDto {
 
   @IsString()
   @MinLength(8, {message:'Mật khẩu phải có ít nhất 8 kí tự'})
+  @MaxLength(64, {message: 'Mật khẩu không vượt quá 64 kí tự'})
   @Matches(/^[^\s]+$/, { message: 'Mật khẩu không được chứa dấu cách' })
   @IsNotEmpty({message: 'Mật khẩu không được để trống'})
   password: string;
@@ -64,6 +65,7 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @MinLength(8, {message:'Mật khẩu phải có ít nhất 8 kí tự'})
+  @MaxLength(64, {message: 'Mật khẩu không vượt quá 64 kí tự'})
   @Matches(/^[^\s]+$/, { message: 'Mật khẩu không được chứa dấu cách' })
   password?: string;
 
