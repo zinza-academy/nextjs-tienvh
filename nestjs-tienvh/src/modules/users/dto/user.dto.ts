@@ -28,7 +28,6 @@ export class UserDto {
   @IsNotEmpty({message: 'Ngày sinh không được để trống'})
   dob: Date;
 
-  @IsString()
   @IsNotEmpty({message: 'Giới tính không được để trống'})
   @IsEnum(Gender, {message: 'Giới tính phải là một trong các giá trị: male, female, other'})
   gender: Gender;
@@ -81,7 +80,6 @@ export class UpdateUserDto {
   dob?: Date;
 
   @IsOptional()
-  @IsString()
   @IsEnum(Gender, {message: 'Giới tính phải là một trong các giá trị: male, female, other'})
   gender?: Gender;
 
@@ -109,7 +107,7 @@ export class ReceiveUserDto {
   email: string;
   name: string;
   dob: Date;
-  gender: string;
+  gender: Gender;
   province_id: number;
   district_id: number;
   ward_id: number;

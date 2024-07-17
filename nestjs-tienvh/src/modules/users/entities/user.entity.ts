@@ -1,4 +1,4 @@
-import { Gender } from 'src/common/enums/gender.enum';
+import { Gender, getGenderEnum, getGenderString } from 'src/common/enums/gender.enum';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class User {
@@ -20,9 +20,14 @@ export class User {
   @Column({ type: 'date' })
   dob: Date;
 
-  @Column({ type: 'enum', enum: Gender, default: Gender.MALE})
+  @Column({ type: 'varchar', length: 10,
+    transformer: {
+      to: (value: Gender) => getGenderString(value),
+      from: (value: string) => getGenderEnum(value)
+    }
+  })
   gender: Gender;
-
+  
   @Column({ name: "province_id", type: 'int' })
   province_id: number;
 
