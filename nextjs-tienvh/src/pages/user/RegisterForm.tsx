@@ -122,10 +122,12 @@ export default function RegisterForm() {
   ) => {
     return (
       <Box sx={{ display: "flex", flexDirection: "column", mb: 2 }}>
-        <label style={{ paddingBottom: "5px" }}>
+        <Box sx={{display: 'flex', flexDirection:'row'}}>
+        <Typography style={{ paddingBottom: "5px" }}>
           {label}
-          <span style={{ color: "red" }}>(*)</span>
-        </label>
+        </Typography>
+        <Typography sx={{color: "red"}}>(*)</Typography>
+          </Box> 
         {type === "select" ? (
         <Controller
           name={name}
