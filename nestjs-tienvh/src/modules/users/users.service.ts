@@ -1,4 +1,4 @@
-import { ApiResponse, createResponse } from './../../common/utils/response.util';
+import { ApiResponse, createResponse } from '../../common/utils/response.util';
 import {
   ConflictException,
   HttpStatus,
@@ -8,27 +8,28 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDto, ReceiveUserDto, UpdateUserDto } from './dto/user.dto';
-import { User } from './entities/user.entity';
-import { UserMapper } from './mapper/user.mapper';
+
+import { Users } from '../../entities/users.entity';
+import { UsersMapper } from './mapper/users.mapper';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(Users)
+    private userRepository: Repository<Users>,
   ) {}
 
   async findAll(): Promise<ApiResponse<ReceiveUserDto[]>> {
     const users = await this.userRepository.find();
-    const userDtos = users.map((user) => UserMapper.toDto(user));
+    const userDtos = users.map((user) => UsersMapper.toDto(user));
     return createResponse(userDtos, 'Users retrieved successfully', HttpStatus.OK);
   }
 
   async create(createUser: UserDto): Promise<ApiResponse<ReceiveUserDto>> {
     await this.checkEmailExists(createUser.email);
-    const userEntity = UserMapper.toCreateEntity(createUser);
+    const userEntity = UsersMapper.toCreateEntity(createUser);
     const savedUser = await this.userRepository.save(userEntity);
-    const userDto = UserMapper.toDto(savedUser);
+    const userDto = UsersMapper.toDto(savedUser);
     return createResponse(userDto, 'User created successfully', HttpStatus.CREATED);
   }
 
@@ -42,13 +43,13 @@ export class UserService {
     if (updateUser.email && updateUser.email !== existingUser.email) {
       await this.checkEmailExists(updateUser.email);
     }
-    const updatedUserEntity = UserMapper.toUpdateEntity(
+    const updatedUserEntity = UsersMapper.toUpdateEntity(
       existingUser,
       updateUser,
     );
 
     const savedUser = await this.userRepository.save(updatedUserEntity);
-    const userDto = UserMapper.toDto(savedUser);
+    const userDto = UsersMapper.toDto(savedUser);
     return createResponse(userDto, 'User updated successfully', HttpStatus.OK);
   }
 

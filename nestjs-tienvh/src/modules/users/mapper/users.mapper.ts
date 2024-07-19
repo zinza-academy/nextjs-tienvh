@@ -1,17 +1,17 @@
-import { User } from '../entities/user.entity';
+import { Users } from '../../../entities/users.entity';
 import { ReceiveUserDto, UpdateUserDto, UserDto } from '../dto/user.dto';
 
-export class UserMapper {
-  static toCreateEntity(dto: UserDto): User {
-    const entity = new User();
+export class UsersMapper {
+  static toCreateEntity(dto: UserDto): Users {
+    const entity = new Users();
     Object.assign(entity, dto);
     return entity;
   }
-  static toUpdateEntity(existingUser: User, dto: UpdateUserDto): User {
+  static toUpdateEntity(existingUser: Users, dto: UpdateUserDto): Users {
     return Object.assign(existingUser, dto);
   }
 
-  static toDto(entity: User): ReceiveUserDto {
+  static toDto(entity: Users): ReceiveUserDto {
     const dto = new ReceiveUserDto();
     dto.id = entity.id;
     dto.cmt = entity.cmt;

@@ -1,5 +1,5 @@
 import { IsDateString, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsPositive, IsString, Matches, MaxLength, MinLength } from 'class-validator';
-import { Gender } from 'src/common/enums/gender.enum';
+import { Gender } from 'src/common/enums/user.enum'; 
 
 export class UserDto {
   @IsNumberString()
