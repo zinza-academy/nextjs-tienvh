@@ -1,6 +1,6 @@
-import { Wards } from 'src/entities/wards.entity';
-import { Users } from '../../../entities/users.entity';
-import { ReceiveUserDto, UpdateUserDto, UserDto } from '../dto/user.dto';
+import { Users } from "entities/users.entity";
+import { ReceiveUserDto, UpdateUserDto, UserDto } from "../dto/users.dto";
+
 
   export class UsersMapper {
     static toCreateEntity(dto: UserDto): Users {

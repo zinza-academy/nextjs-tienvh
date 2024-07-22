@@ -1,7 +1,8 @@
-import { Provinces } from 'src/entities/provinces.entity';
+
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Wards } from './wards.entity';
+import { Provinces } from './provinces.entity';
 
 @Entity()
 export class Districts {
@@ -17,7 +18,4 @@ export class Districts {
 
   @OneToMany(() => Wards, (ward) => ward.district)
   wards: Wards[];
-
-  // @OneToMany(() => Address, (address) => address.district)
-  // addresses: Address[];
 }

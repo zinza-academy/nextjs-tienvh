@@ -1,4 +1,4 @@
-import { Users } from 'src/entities/users.entity';
+import { Users } from 'entities/users.entity';
 import { Repository } from 'typeorm';
 
 

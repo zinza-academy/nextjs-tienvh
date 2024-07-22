@@ -11,8 +11,4 @@ export class Provinces {
 
   @OneToMany(() => Districts, (district) => district.province)
   districts: Districts[];
-
-  // @OneToMany(() => Address, (address) => address.province)
-  // addresses: Address[];
-
 }

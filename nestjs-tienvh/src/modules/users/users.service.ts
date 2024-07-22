@@ -7,17 +7,24 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserDto, ReceiveUserDto, UpdateUserDto } from './dto/user.dto';
+import { UserDto, ReceiveUserDto, UpdateUserDto } from './dto/users.dto';
 
 import { Users } from '../../entities/users.entity';
 import { UsersMapper } from './mapper/users.mapper';
-import { Wards } from 'src/entities/wards.entity';
+import { Wards } from 'entities/wards.entity';
+import { Provinces } from 'entities/provinces.entity';
+import { Districts } from 'entities/districts.entity';
+
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(Users)
     private userRepository: Repository<Users>,
+    @InjectRepository(Provinces)
+    private provinceRepository: Repository<Provinces>,
+    @InjectRepository(Districts)
+    private districtRepository: Repository<Districts>,
     @InjectRepository(Wards)
     private wardRepository: Repository<Wards>
   ) {}
@@ -32,36 +39,41 @@ export class UsersService {
 
   async create(createUser: UserDto): Promise<ApiResponse<ReceiveUserDto>> {
     await this.checkEmailExists(createUser.email);
-    
-    const ward = await this.wardRepository.findOne({
-      where: { id: createUser.ward_id },
-      relations: ['district', 'district.province'],
+
+    const province = await this.provinceRepository.findOne({where: { id: createUser.province_id }});
+    if (!province) {
+      throw new NotFoundException('Invalid province');
+    }
+
+    const district = await this.districtRepository.findOne({
+      where: { id: createUser.district_id, province: { id: createUser.province_id } },
+      relations: ['province'],
     });
-  
+    if (!district) {
+      throw new NotFoundException('Invalid district');
+    }
+
+    const ward = await this.wardRepository.findOne({
+      where: { id: createUser.ward_id, district: { id: createUser.district_id } },
+      relations: ['district'],
+    });
     if (!ward) {
       throw new NotFoundException('Invalid ward');
     }
   
-    if (ward.district.province.id !== createUser.province_id) {
-      throw new NotFoundException('Invalid province');
-    }
-  
-    if (ward.district.id !== createUser.district_id) {
-      throw new NotFoundException('Invalid district');
-    }
-  
     const userEntity = UsersMapper.toCreateEntity(createUser);
-    userEntity.role = 0;
+    userEntity.role = 1;
     const savedUser = await this.userRepository.save(userEntity);
+  
     const fullUser = await this.userRepository.findOne({
       where: { id: savedUser.id },
       relations: ['ward', 'ward.district', 'ward.district.province'],
     });
-    
+  
     const userDto = UsersMapper.toDto(fullUser);
     return createResponse(userDto, 'User created successfully', HttpStatus.CREATED);
   }
-
+  
   async update(id: number, updateUser: UpdateUserDto): Promise<ApiResponse<ReceiveUserDto>> {
     const existingUser = await this.userRepository.findOne({
       where: { id },
@@ -76,40 +88,53 @@ export class UsersService {
       await this.checkEmailExists(updateUser.email);
     }
   
-    if (updateUser.ward_id || updateUser.district_id || updateUser.province_id) {
-      let ward: Wards;
-      if (updateUser.ward_id) {
-        ward = await this.wardRepository.findOne({
-          where: { id: updateUser.ward_id },
-          relations: ['district', 'district.province'],
-        });
-        if (!ward) {
-          throw new NotFoundException('Invalid ward');
-        }
-      }
-  
-      if (updateUser.district_id && (!ward || ward.district.id !== updateUser.district_id)) {
-        throw new NotFoundException('Invalid district');
-      }
-      if (updateUser.province_id && (!ward || ward.district.province.id !== updateUser.province_id)) {
+    if (updateUser.province_id) {
+      const province = await this.provinceRepository.findOne({ where: { id: updateUser.province_id } });
+      if (!province) {
         throw new NotFoundException('Invalid province');
       }
+    }
   
-      existingUser.ward = ward;
+    if (updateUser.district_id) {
+      const district = await this.districtRepository.findOne({
+        where: { id: updateUser.district_id, province: { id: updateUser.province_id } },
+        relations: ['province'],
+      });
+      if (!district) {
+        throw new NotFoundException('Invalid district');
+      }
+    }
+  
+    if (updateUser.ward_id) {
+      const ward = await this.wardRepository.findOne({
+        where: { id: updateUser.ward_id, district: { id: updateUser.district_id } },
+        relations: ['district'],
+      });
+      if (!ward) {
+        throw new NotFoundException('Invalid ward');
+      }
     }
   
     const updatedUserEntity = UsersMapper.toUpdateEntity(existingUser, updateUser);
+    if (updateUser.ward_id) {
+      const ward = await this.wardRepository.findOne({
+        where: { id: updateUser.ward_id },
+        relations: ['district', 'district.province'],
+      });
+      updatedUserEntity.ward = ward;
+    }
+  
     const savedUser = await this.userRepository.save(updatedUserEntity);
-    
+  
     const fullUser = await this.userRepository.findOne({
       where: { id: savedUser.id },
       relations: ['ward', 'ward.district', 'ward.district.province'],
     });
-    
+  
     const userDto = UsersMapper.toDto(fullUser);
     return createResponse(userDto, 'User updated successfully', HttpStatus.OK);
   }
-
+  
   async remove(id: number): Promise<ApiResponse<null>> {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) {

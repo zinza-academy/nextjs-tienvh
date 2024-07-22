@@ -1,15 +1,7 @@
-import {
-  Gender,
-  getGenderEnum,
-  getGenderString,
-  getRoleEnum,
-  getRoleString,
-  Role,
-} from 'src/common/enums/user.enum';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Districts } from './districts.entity';
-import { Provinces } from './provinces.entity';
+
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Wards } from './wards.entity';
+import { Gender, getGenderEnum, getGenderString, getRoleEnum, getRoleString, Role } from 'common/enums/user.enum';
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()

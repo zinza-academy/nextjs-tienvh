@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
-import { ApiResponse } from 'src/common/utils/response.util';
-import { ReceiveUserDto, UpdateUserDto, UserDto } from './dto/user.dto';
+
+import { ReceiveUserDto, UpdateUserDto, UserDto } from './dto/users.dto';
 import { UsersService } from './users.service';
+import { ApiResponse } from 'common/utils/response.util';
 
 
 @Controller('users')
