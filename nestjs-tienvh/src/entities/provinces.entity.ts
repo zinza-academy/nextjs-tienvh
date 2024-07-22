@@ -1,6 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Districts } from './districts.entity';
-import { Address } from './address.entity';
 
 @Entity()
 export class Provinces {
@@ -13,7 +12,7 @@ export class Provinces {
   @OneToMany(() => Districts, (district) => district.province)
   districts: Districts[];
 
-  @OneToMany(() => Address, (address) => address.province)
-  addresses: Address[];
+  // @OneToMany(() => Address, (address) => address.province)
+  // addresses: Address[];
 
 }

@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn
 } from 'typeorm';
 import { Districts } from './districts.entity';
-import { Address } from './address.entity';
+import { Users } from './users.entity';
 
 @Entity()
 export class Wards {
@@ -21,7 +21,7 @@ export class Wards {
   @JoinColumn({ name: 'district_id' })
   district: Districts;
 
-  @OneToMany(() => Address, (address) => address.ward)
-  addresses: Address[];
+  @OneToMany(() => Users, (user) => user.ward)
+  users: Users[];
 
 }

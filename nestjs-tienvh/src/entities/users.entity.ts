@@ -6,7 +6,10 @@ import {
   getRoleString,
   Role,
 } from 'src/common/enums/user.enum';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Districts } from './districts.entity';
+import { Provinces } from './provinces.entity';
+import { Wards } from './wards.entity';
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
@@ -37,15 +40,6 @@ export class Users {
   })
   gender: Gender;
 
-  @Column({ name: 'province_id', type: 'int' })
-  province_id: number;
-
-  @Column({ name: 'district_id', type: 'int' })
-  district_id: number;
-
-  @Column({ name: 'ward_id', type: 'int' })
-  ward_id: number;
-
   @Column({
     name: 'role',
     type: 'varchar',
@@ -55,4 +49,7 @@ export class Users {
     },
   })
   role: Role;
+  @ManyToOne(() => Wards,(ward) => ward.users)
+  @JoinColumn({ name: 'ward_id' })
+  ward: Wards;
 }
