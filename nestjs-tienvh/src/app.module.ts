@@ -10,6 +10,9 @@ import { Provinces } from './entities/provinces.entity';
 import { Districts } from './entities/districts.entity';
 import { Wards } from './entities/wards.entity';
 import { ConsoleModule } from 'nestjs-console';
+import { ProvincesModule } from 'modules/provinces/provinces.module';
+import { DistrictsModule } from 'modules/districts/districts.module';
+import { WardsModule } from 'modules/wards/wards.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +29,9 @@ import { ConsoleModule } from 'nestjs-console';
     }),
     TypeOrmModule.forFeature([Provinces, Districts, Wards]),
     UsersModule,
+    ProvincesModule,
+    DistrictsModule,
+    WardsModule,
     ConsoleModule,
   ],
   providers: [
