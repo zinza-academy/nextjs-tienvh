@@ -13,6 +13,7 @@ import { UsersMapper } from './mapper/users.mapper';
 import { Wards } from 'entities/wards.entity';
 import { Provinces } from 'entities/provinces.entity';
 import { Districts } from 'entities/districts.entity';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
   constructor(
@@ -36,6 +37,7 @@ export class UsersService {
 
   async create(createUser: UserDto): Promise<ApiResponse<ReceiveUserDto>> {
     await this.checkEmailExists(createUser.email);
+    const hashedPassword = await bcrypt.hash(createUser.password, 10);
 
     const province = await this.provinceRepository.findOne({where: { id: createUser.province_id }});
     if (!province) {
@@ -57,9 +59,10 @@ export class UsersService {
     if (!ward) {
       throw new NotFoundException('Invalid ward');
     }
-  
+
     const userEntity = UsersMapper.toCreateEntity(createUser);
     userEntity.role = 1;
+    userEntity.password = hashedPassword;
     const savedUser = await this.userRepository.save(userEntity);
   
     const fullUser = await this.userRepository.findOne({
@@ -111,7 +114,7 @@ export class UsersService {
         throw new NotFoundException('Invalid ward');
       }
     }
-  
+    
     const updatedUserEntity = UsersMapper.toUpdateEntity(existingUser, updateUser);
     if (updateUser.ward_id) {
       const ward = await this.wardRepository.findOne({
@@ -120,7 +123,9 @@ export class UsersService {
       });
       updatedUserEntity.ward = ward;
     }
-  
+    if (updateUser.password) {
+      updatedUserEntity.password = await bcrypt.hash(updateUser.password, 10);
+    }
     const savedUser = await this.userRepository.save(updatedUserEntity);
   
     const fullUser = await this.userRepository.findOne({
@@ -138,6 +143,13 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     return createResponse(null, 'User deleted successfully', HttpStatus.OK);
+  }
+
+  async findByEmail(email: string): Promise<Users | undefined> {
+    return this.userRepository.findOne({ 
+      where: { email },
+      relations: ['ward', 'ward.district', 'ward.district.province'],
+    });
   }
 
   private async checkEmailExists(email: string): Promise<void> {
