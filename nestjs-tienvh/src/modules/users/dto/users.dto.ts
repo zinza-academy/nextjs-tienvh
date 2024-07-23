@@ -1,6 +1,5 @@
 import { IsDateString, IsEmail, IsEnum, IsInt, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsPositive, IsString, Matches, MaxLength, MinLength } from 'class-validator';
-import { Gender } from 'src/common/enums/gender.enum';
-
+import { Gender } from '../../../common/enums/user.enum';
 export class UserDto {
   @IsNumberString()
   @Matches(/^\d{9}$|^\d{12}$/,{message: 'CMND/CCCD phải có 9 hoặc 12 số'})
