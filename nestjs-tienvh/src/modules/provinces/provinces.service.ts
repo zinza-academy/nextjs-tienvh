@@ -6,8 +6,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApiResponse, createResponse } from '../../common/utils/response.util';
 import { Provinces } from 'entities/provinces.entity';
-
-
 @Injectable()
 export class ProvincesService {
   constructor(

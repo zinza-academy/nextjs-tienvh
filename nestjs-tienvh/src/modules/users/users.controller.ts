@@ -1,10 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, ValidationPipe } from '@nestjs/common';
 
+import { ApiResponse } from 'common/utils/response.util';
 import { ReceiveUserDto, UpdateUserDto, UserDto } from './dto/users.dto';
 import { UsersService } from './users.service';
-import { ApiResponse } from 'common/utils/response.util';
-
-
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
@@ -19,13 +17,13 @@ export class UsersController {
     return this.userService.create(createUserDto);
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto) {
+  @Patch()
+  async update(@Query('id',ParseIntPipe) id: string, @Body(ValidationPipe) updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
+  @Delete()
+  async remove(@Query('id',ParseIntPipe) id: string) {
     return this.userService.remove(+id);
   }
 }

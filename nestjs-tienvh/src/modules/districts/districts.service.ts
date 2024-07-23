@@ -8,8 +8,6 @@ import { Repository } from 'typeorm';
 import { ApiResponse, createResponse } from '../../common/utils/response.util';
 import { Provinces } from 'entities/provinces.entity';
 import { Districts } from 'entities/districts.entity';
-
-
 @Injectable()
 export class DistrictsService {
   constructor(

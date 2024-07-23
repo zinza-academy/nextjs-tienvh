@@ -8,8 +8,6 @@ import { Districts } from 'entities/districts.entity';
 import { Wards } from 'entities/wards.entity';
 import { Repository } from 'typeorm';
 import { ApiResponse, createResponse } from '../../common/utils/response.util';
-
-
 @Injectable()
 export class WardsService {
   constructor(
