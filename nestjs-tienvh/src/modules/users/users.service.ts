@@ -152,6 +152,13 @@ export class UsersService {
     });
   }
 
+  async findById(id: number): Promise<Users | undefined> {
+    return this.userRepository.findOne({ 
+      where: { id },
+      relations: ['ward', 'ward.district', 'ward.district.province'],
+    });
+  }
+
   private async checkEmailExists(email: string): Promise<void> {
     const existingUser = await this.userRepository.findOneBy({ email });
     if (existingUser) {
