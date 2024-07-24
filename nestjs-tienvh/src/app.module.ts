@@ -13,6 +13,7 @@ import { ConsoleModule } from 'nestjs-console';
 import { ProvincesModule } from 'modules/provinces/provinces.module';
 import { DistrictsModule } from 'modules/districts/districts.module';
 import { WardsModule } from 'modules/wards/wards.module';
+import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,6 +34,7 @@ import { WardsModule } from 'modules/wards/wards.module';
     DistrictsModule,
     WardsModule,
     ConsoleModule,
+    AuthModule,
   ],
   providers: [
     {

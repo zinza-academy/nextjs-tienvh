@@ -10,6 +10,6 @@ import { Districts } from 'entities/districts.entity';
   imports: [TypeOrmModule.forFeature([Users,Provinces,Districts,Wards])],
   controllers: [UsersController],
   providers: [UsersService],
-
+  exports: [UsersService],
 })
 export class UsersModule {}

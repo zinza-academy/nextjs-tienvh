@@ -1,12 +1,10 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, ValidationPipe } from '@nestjs/common';
-
 import { ApiResponse } from 'common/utils/response.util';
 import { ReceiveUserDto, UpdateUserDto, UserDto } from './dto/users.dto';
 import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
-
   @Get()
   async findAll(): Promise<ApiResponse<ReceiveUserDto[]>> {
     return this.userService.findAll();
