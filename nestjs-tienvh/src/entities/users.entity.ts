@@ -44,4 +44,10 @@ export class Users {
   @ManyToOne(() => Wards,(ward) => ward.users)
   @JoinColumn({ name: 'ward_id' })
   ward: Wards;
+
+  @Column({ nullable: true })
+  resetToken: string;
+
+  @Column({ nullable: true })
+  resetTokenExpiry: Date;
 }

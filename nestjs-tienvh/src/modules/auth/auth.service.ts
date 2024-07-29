@@ -1,16 +1,16 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { ApiResponse } from 'common/utils/response.util';
+import { addMinutes, isBefore } from 'date-fns';
+import { MailService } from 'modules/mail/mail.service';
+import { ReceiveUserDto } from 'modules/users/dto/users.dto';
+import { v4 as uuidv4 } from 'uuid';
 import { UsersService } from '../users/users.service';
+import { ChangePasswordDTO } from './dto/change-password.dto';
+import { ForgotPasswordDTO } from './dto/forgot-password.dto';
 import { LoginDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
-import { ApiResponse } from 'common/utils/response.util';
-import { ReceiveUserDto } from 'modules/users/dto/users.dto';
-import { ForgotPasswordDTO } from './dto/forgot-password.dto';
-import { MailService } from 'modules/mail/mail.service';
-import { Users } from 'entities/users.entity';
-import { ChangePasswordDTO } from './dto/change-password.dto';
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -33,33 +33,26 @@ export class AuthService {
     return this.usersService.create(registerDto);
   }
 
-  async forgotPassword(forgotPasswordDto: ForgotPasswordDTO){
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDTO): Promise<void> {
     const user = await this.usersService.findByEmail(forgotPasswordDto.email);
     if (!user) throw new NotFoundException('User not found');
-    const token = await this.generateResetToken(user);
+    const token = uuidv4();
+    const expiry = addMinutes(new Date(), 5);
+    await this.usersService.updateResetToken(user.id, token, expiry);
     await this.mailService.sendForgotPasswordEmail(user.email, token);
     return token;
   }
  
   async changePassword(changePasswordDto: ChangePasswordDTO): Promise<void> {
-    try {
-      const payload = await this.jwtService.verifyAsync(changePasswordDto.token);
-      const user = await this.usersService.findById(payload.sub);
-      if (!user) {
-        throw new UnauthorizedException('Invalid token');
-      }
-      const hashedPassword = await bcrypt.hash(changePasswordDto.newPassword, 10);
-      await this.usersService.updatePassword(user.id, hashedPassword);
-    } catch (error) {
-      if (error instanceof UnauthorizedException) {
-        throw error;
-      }
-      throw new BadRequestException('Invalid or expired token');
+    const user = await this.usersService.findByResetToken(changePasswordDto.token);
+    if (!user || !user.resetTokenExpiry || isBefore(user.resetTokenExpiry, new Date())) {
+      throw new UnauthorizedException('Invalid or expired reset token');
     }
-  }
-
-  async generateResetToken(user: Users) {
-    const payload = { sub: user.id, email: user.email };
-    return this.jwtService.signAsync(payload, { expiresIn: '5m' });
+    const hashedPassword = await bcrypt.hash(changePasswordDto.newPassword, 10);
+    user.password = hashedPassword;
+    const token = null;
+    const expiry = null;
+    await this.usersService.updateResetToken(user.id, token, expiry);
+    await this.usersService.updatePassword(user.id,user.password);
   }
 }

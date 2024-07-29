@@ -1,14 +1,13 @@
-  import { Body, Controller, Get, HttpStatus, Post, Res, ValidationPipe,Query, UseGuards, Param } from '@nestjs/common';
+  import { Body, Controller, HttpStatus, Post, Res, ValidationPipe } from '@nestjs/common';
 import { ApiResponse, createResponse } from 'common/utils/response.util';
 import { Response } from 'express';
+import { ReceiveUserDto } from 'modules/users/dto/users.dto';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public-route.decorator';
+import { ChangePasswordDTO } from './dto/change-password.dto';
+import { ForgotPasswordDTO } from './dto/forgot-password.dto';
 import { LoginDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
-import { ReceiveUserDto } from 'modules/users/dto/users.dto';
-import { ForgotPasswordDTO } from './dto/forgot-password.dto';
-import { ChangePassWordToken} from './guard/change-password.guard';
-import { ChangePasswordDTO } from './dto/change-password.dto';
   @Controller('auth')
   export class AuthController {
     constructor(private authService: AuthService) {}
@@ -45,7 +44,6 @@ import { ChangePasswordDTO } from './dto/change-password.dto';
     }
 
     @Public()
-    @UseGuards(ChangePassWordToken)
     @Post('change-password')
     async changePassword(@Body(ValidationPipe) changePasswordDto: ChangePasswordDTO) {
       await this.authService.changePassword(changePasswordDto);

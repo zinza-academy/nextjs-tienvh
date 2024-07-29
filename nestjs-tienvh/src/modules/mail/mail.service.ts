@@ -13,7 +13,7 @@ export class MailService {
     try {
       const url = `${this.configService.get(
         'CORS_ORIGIN',
-      )}/reset-password/${token}`;
+      )}/reset-password/?token=${token}`;
 
       await this.mailerService.sendMail({
         to: toEmail,

@@ -175,4 +175,20 @@ export class UsersService {
     user.password = newPassword;
     await this.userRepository.save(user);
   }
+
+  async updateResetToken(userId: number, resetToken: string, resetTokenExpiry: Date): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = resetTokenExpiry;
+    await this.userRepository.save(user);
+  }
+
+  findByResetToken(token: string): Promise<Users | undefined> {
+    return this.userRepository.findOne({ where: { resetToken: token } });
+  }
+  
 }
