@@ -47,13 +47,9 @@ import { ChangePasswordDTO } from './dto/change-password.dto';
     @Public()
     @UseGuards(ChangePassWordToken)
     @Post('change-password')
-    async changePassword(
-      @Query('token') token: string,
-      @Body(ValidationPipe) changePasswordDto: ChangePasswordDTO
-    ) {
-      await this.authService.changePassword(token, changePasswordDto.newPassword);
-      return { message: 'Password changed successfully' };
+    async changePassword(@Body(ValidationPipe) changePasswordDto: ChangePasswordDTO) {
+      await this.authService.changePassword(changePasswordDto);
+      return createResponse(null, 'Password changed successfully', HttpStatus.OK);
     }
-  
   }
 

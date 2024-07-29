@@ -9,10 +9,10 @@ export class ChangePassWordToken implements CanActivate {
     context: ExecutionContext,
   ): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.query.token as string;
+    const token = request.body.token;
 
     if (!token) {
-      throw new UnauthorizedException('Token is required');
+      throw new UnauthorizedException('Reset token is required');
     }
 
     try {

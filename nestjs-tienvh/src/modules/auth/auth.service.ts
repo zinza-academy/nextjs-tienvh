@@ -24,7 +24,6 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(loginDto.password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    
     const payload = { id: user.id, name: user.name, email: user.email, role: user.role };
     const accessToken = this.jwtService.sign(payload);
     return { access_token: accessToken };
@@ -42,17 +41,14 @@ export class AuthService {
     return token;
   }
  
-  async changePassword(token: string, newPassword: string): Promise<void> {
+  async changePassword(changePasswordDto: ChangePasswordDTO): Promise<void> {
     try {
-      const payload = await this.jwtService.verifyAsync(token);
+      const payload = await this.jwtService.verifyAsync(changePasswordDto.token);
       const user = await this.usersService.findById(payload.sub);
-      
       if (!user) {
         throw new UnauthorizedException('Invalid token');
       }
-  
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-  
+      const hashedPassword = await bcrypt.hash(changePasswordDto.newPassword, 10);
       await this.usersService.updatePassword(user.id, hashedPassword);
     } catch (error) {
       if (error instanceof UnauthorizedException) {
