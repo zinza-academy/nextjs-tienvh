@@ -1,20 +1,21 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UsersModule } from './modules/users/users.module';
-import { DatabaseConfig } from './config/database.config';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { APP_FILTER } from '@nestjs/core'
-import { ImportLocationDataCommand } from './config/commands/import-location-data';
-import { Provinces } from './entities/provinces.entity';
-import { Districts } from './entities/districts.entity';
-import { Wards } from './entities/wards.entity';
-import { ConsoleModule } from 'nestjs-console';
-import { ProvincesModule } from 'modules/provinces/provinces.module';
+import { APP_FILTER } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { DistrictsModule } from 'modules/districts/districts.module';
-import { WardsModule } from 'modules/wards/wards.module';
-import { AuthModule } from './modules/auth/auth.module';
+import { ProvincesModule } from 'modules/provinces/provinces.module';
+import { VaccinationSitesModule } from 'modules/vaccination-sites/vaccination-sites.module';
 import { VaccinesModule } from 'modules/vaccines/vaccines.module';
+import { WardsModule } from 'modules/wards/wards.module';
+import { ConsoleModule } from 'nestjs-console';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ImportLocationDataCommand } from './config/commands/import-location-data';
+import { DatabaseConfig } from './config/database.config';
+import { Districts } from './entities/districts.entity';
+import { Provinces } from './entities/provinces.entity';
+import { Wards } from './entities/wards.entity';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,6 +38,7 @@ import { VaccinesModule } from 'modules/vaccines/vaccines.module';
     ConsoleModule,
     AuthModule,
     VaccinesModule,
+    VaccinationSitesModule,
   ],
   providers: [
     {
