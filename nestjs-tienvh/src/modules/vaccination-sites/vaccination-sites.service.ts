@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ApiResponse, createResponse } from "common/utils/response.util";
 import { VaccinationSite } from "entities/vaccination-site.entity";
@@ -78,6 +78,11 @@ export class VaccinationSitesService {
   }
 
   async create(createVaccinationSite: CreateVaccinationSiteDto): Promise<ApiResponse<VaccinationSite>> {
+    const nameExists = await this.checkVaccinationSiteNameExists(createVaccinationSite.name);
+    if (nameExists) {
+      throw new ConflictException('Vaccination site with this name already exists');
+    }
+  
     const ward = await this.wardRepository.findOne({
       where: { id: createVaccinationSite.ward_id },
       relations: ['district', 'district.province'],
@@ -101,6 +106,14 @@ export class VaccinationSitesService {
     if (!vaccinationSite) {
       throw new NotFoundException('Vaccination site not found');
     }
+  
+    if (updateVaccinationSiteDto.name) {
+      const nameExists = await this.checkVaccinationSiteNameExists(updateVaccinationSiteDto.name, id);
+      if (nameExists) {
+        throw new ConflictException('Vaccination site with this name already exists');
+      }
+    }
+  
     if (updateVaccinationSiteDto.ward_id) {
       const ward = await this.wardRepository.findOne({
         where: { id: updateVaccinationSiteDto.ward_id },
@@ -124,5 +137,15 @@ export class VaccinationSitesService {
     return createResponse(null, 'Vaccination site deleted successfully', HttpStatus.OK);
   }
 
+  async checkVaccinationSiteNameExists(name: string, id?: number): Promise<boolean> {
+    const query = this.vaccinationSiteRepository.createQueryBuilder('vaccinationSite')
+      .where('LOWER(vaccinationSite.name) = LOWER(:name)', { name });
   
+    if (id) {
+      query.andWhere('vaccinationSite.id != :id', { id });
+    }
+  
+    const count = await query.getCount();
+    return count > 0;
+  }
 }
