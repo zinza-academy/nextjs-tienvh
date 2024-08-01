@@ -14,6 +14,7 @@ import { ProvincesModule } from 'modules/provinces/provinces.module';
 import { DistrictsModule } from 'modules/districts/districts.module';
 import { WardsModule } from 'modules/wards/wards.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { VaccinesModule } from 'modules/vaccines/vaccines.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,6 +36,7 @@ import { AuthModule } from './modules/auth/auth.module';
     WardsModule,
     ConsoleModule,
     AuthModule,
+    VaccinesModule,
   ],
   providers: [
     {
