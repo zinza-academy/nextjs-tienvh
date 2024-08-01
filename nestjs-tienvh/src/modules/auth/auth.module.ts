@@ -8,6 +8,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { MailModule } from 'modules/mail/mail.module';
+
 @Module({
   imports: [
     UsersModule,
@@ -22,6 +24,7 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
       }),
       inject: [ConfigService],
     }),
+    MailModule
   ],
   providers: [
     AuthService,

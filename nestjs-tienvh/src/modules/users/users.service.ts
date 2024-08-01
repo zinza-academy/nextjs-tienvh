@@ -165,4 +165,30 @@ export class UsersService {
       throw new ConflictException('Email already exists');
     }
   }
+
+  async updatePassword(userId: number, newPassword: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.password = newPassword;
+    await this.userRepository.save(user);
+  }
+
+  async updateResetToken(userId: number, resetToken: string, resetTokenExpiry: Date): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = resetTokenExpiry;
+    await this.userRepository.save(user);
+  }
+
+  findByResetToken(token: string): Promise<Users | undefined> {
+    return this.userRepository.findOne({ where: { resetToken: token } });
+  }
+  
 }
