@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { VaccinationSite } from "./vaccination-site.entity";
 
 @Entity()
 export class Vaccines {
@@ -19,4 +20,7 @@ export class Vaccines {
 
   @Column({ type: 'date' })
   expiration_date: Date;
+
+  @OneToMany(() => VaccinationSite, vaccinationSite => vaccinationSite.vaccine)
+  vaccinationSites: VaccinationSite[];
 }

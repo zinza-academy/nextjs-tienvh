@@ -21,6 +21,12 @@ export class CreateVaccinationSiteDto {
   @IsPositive({message: 'Mã Xã/Phường phải là số dương'})
   ward_id: number;
 
+  @IsNumber()
+  @IsNotEmpty({message: 'Vaccine không được để trống'})
+  @IsInt({message: 'Vaccine id phải là số nguyên'})
+  @IsPositive({message: 'Vaccine id phải là số dương'})
+  vaccine_id: number;
+
   @IsString()
   @IsNotEmpty({message: 'Địa chỉ tiêm không được để trống'})
   address: string;
@@ -46,6 +52,12 @@ export class UpdateVaccinationSiteDto {
   @IsInt({message: 'Mã Xã/Phường phải là số nguyên'})
   @IsPositive({message: 'Mã Xã/Phường phải là số dương'})
   ward_id?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @IsInt({message: 'Vaccine id phải là số nguyên'})
+  @IsPositive({message: 'Vaccine id phải là số dương'})
+  vaccine_id?: number;
 
   @IsString()
   @IsOptional()

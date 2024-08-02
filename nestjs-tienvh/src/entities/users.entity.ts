@@ -1,7 +1,8 @@
 
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Wards } from './wards.entity';
 import { Gender, getGenderEnum, getGenderString, getRoleEnum, getRoleString, Role } from 'common/enums/user.enum';
+import { VaccinesRegistration } from './vaccines-registration.entity';
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
@@ -50,4 +51,7 @@ export class Users {
 
   @Column({ nullable: true })
   resetTokenExpiry: Date;
+
+  @OneToMany(() => VaccinesRegistration, vaccinesRegistration => vaccinesRegistration.user)
+  vaccinesRegistrations: VaccinesRegistration[];
 }

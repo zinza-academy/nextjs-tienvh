@@ -1,5 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Wards } from "./wards.entity";
+import { VaccinesRegistration } from "./vaccines-registration.entity";
+import { Vaccines } from "./vaccines.entity";
 
 @Entity()
 export class VaccinationSite {
@@ -21,4 +23,11 @@ export class VaccinationSite {
 
   @Column({ type: 'varchar', length: 255 })
   address: string;
+
+  @ManyToOne(() => Vaccines,(vaccine) => vaccine.vaccinationSites)
+  @JoinColumn({ name: 'vaccine_id' , referencedColumnName: 'id'})
+  vaccine: Vaccines;
+  
+  @OneToMany(() => VaccinesRegistration, vaccinesRegistration => vaccinesRegistration.vaccinationSite)
+  vaccinesRegistrations: VaccinesRegistration[];
 }
