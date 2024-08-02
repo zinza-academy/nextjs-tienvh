@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Districts } from './districts.entity';
 import { Users } from './users.entity';
+import { VaccinationSite } from './vaccination-site.entity';
 
 @Entity()
 export class Wards {
@@ -24,4 +25,6 @@ export class Wards {
   @OneToMany(() => Users, (user) => user.ward)
   users: Users[];
 
+  @OneToMany(() => VaccinationSite, vaccinationSite => vaccinationSite.ward)
+  vaccinationSites: VaccinationSite[];
 }
