@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, ParseIntPipe, Patch, Post, Query, UseGua
 import { Role } from "common/enums/user.enum";
 import { PaginationInterceptor } from "common/interceptors/pagination.interceptor";
 import { AllowedRoles } from "modules/auth/decorators/roles-route.decorator";
-import { CreateVaccinationSiteDto, UpdateVaccinationSiteDto } from "./dto/vaccination-sites.dto";
+import { CreateVaccinationSiteDto, FindVaccinationSiteByWardIdDto, PaginationDto, SearchVaccinationSiteDto, UpdateVaccinationSiteDto } from "./dto/vaccination-sites.dto";
 import { VaccinationSitesService } from "./vaccination-sites.service";
 import { RoleGuard } from "modules/auth/guard/roles.guard";
 
@@ -12,38 +12,27 @@ export class VaccinationSitesController {
 
   @Get()
   @UseInterceptors(PaginationInterceptor)
-  async findAll(
-    @Query('page') page: number = 1,
-    @Query('pageSize') pageSize: number = 10,
-  ) {
-    return this.vaccinationSitesService.findAll(page, pageSize);
+  async findAll(@Query(ValidationPipe) dto: PaginationDto) {
+    return this.vaccinationSitesService.findAll(dto);
   }
 
   @Get('by-ward')
   @UseInterceptors(PaginationInterceptor)
-  async findByWardId(
-    @Query('wardId', ParseIntPipe) wardId: number,
-    @Query('page') page: number = 1,
-    @Query('pageSize') pageSize: number = 10,
-  ) {
-    return this.vaccinationSitesService.findByWardId(wardId, page, pageSize);
+  async findByWardId(@Query(ValidationPipe) dto: FindVaccinationSiteByWardIdDto) {
+    return this.vaccinationSitesService.findByWardId(dto);
   }
 
   @Get('search')
   @UseInterceptors(PaginationInterceptor)
-  async search(
-    @Query('name') name?: string,
-    @Query('address') address?: string,
-    @Query('page') page: number = 1,
-    @Query('pageSize') pageSize: number = 10
-  ) {
-    return this.vaccinationSitesService.search(name, address, page, pageSize);
+  async search(@Query(ValidationPipe) dto: SearchVaccinationSiteDto) {
+    return this.vaccinationSitesService.search(dto);
   }
 
   @Get('details')
   async findOneVaccinationSite(@Query('id', ParseIntPipe) id: number) {
     return this.vaccinationSitesService.findOneVaccinationSite(id);
   }
+
   @UseGuards(RoleGuard)
   @AllowedRoles(Role.ADMIN)
   @Post()

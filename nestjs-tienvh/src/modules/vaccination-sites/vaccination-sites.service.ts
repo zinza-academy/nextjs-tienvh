@@ -4,7 +4,7 @@ import { ApiResponse, createResponse } from "common/utils/response.util";
 import { VaccinationSite } from "entities/vaccination-site.entity";
 import { Wards } from "entities/wards.entity";
 import { Like, Repository } from "typeorm";
-import { CreateVaccinationSiteDto, UpdateVaccinationSiteDto } from "./dto/vaccination-sites.dto";
+import { CreateVaccinationSiteDto, FindVaccinationSiteByWardIdDto, PaginationDto, SearchVaccinationSiteDto, UpdateVaccinationSiteDto } from "./dto/vaccination-sites.dto";
 @Injectable()
 export class VaccinationSitesService {
   constructor(
@@ -14,7 +14,9 @@ export class VaccinationSitesService {
     private wardRepository: Repository<Wards>
   ) {}
 
-  async findAll(page: number, pageSize: number): Promise<[VaccinationSite[], number]> {
+  async findAll(dto: PaginationDto): Promise<[VaccinationSite[], number]> {
+    const page = dto.page || 1;
+    const pageSize = dto.pageSize || 10;
     const [vaccinationSites, total] = await this.vaccinationSiteRepository.findAndCount({
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -23,46 +25,46 @@ export class VaccinationSitesService {
     return [vaccinationSites, total];
   }
 
-  async findByWardId(wardId: number, page: number, pageSize: number): Promise<[VaccinationSite[], number]> {
+  async findByWardId(dto: FindVaccinationSiteByWardIdDto ): Promise<[VaccinationSite[], number]> {
+    const page = dto.page || 1;
+    const pageSize = dto.pageSize || 10;
     const [vaccinationSites, total] = await this.vaccinationSiteRepository.findAndCount({
-      where: { ward: { id: wardId } },
+      where: { ward: { id: dto.ward_id } },
       relations: ['ward', 'ward.district', 'ward.district.province'],
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
   
     if (vaccinationSites.length === 0) {
-      throw new NotFoundException(`No vaccination sites found for ward ID ${wardId}`);
+      throw new NotFoundException(`No vaccination sites found for ward ID ${dto.ward_id}`);
     }
   
     return [vaccinationSites, total];
   }
 
-  async search(
-    name?: string,
-    address?: string,
-    page: number = 1,
-    pageSize: number = 10
-  ): Promise<[VaccinationSite[], number]> {
+  async search(dto: SearchVaccinationSiteDto): Promise<[VaccinationSite[], number]> {
     const whereConditions: any = {};
-    if (name) {
-      whereConditions.name = Like(`%${name}%`);
+    if (dto.name) {
+      whereConditions.name = Like(`%${dto.name}%`);
     }
-    if (address) {
-      whereConditions.address = Like(`%${address}%`);
+    if (dto.address) {
+      whereConditions.address = Like(`%${dto.address}%`);
     }
-
+    
+    const page = dto.page || 1;
+    const pageSize = dto.pageSize || 10;
+    
     const [vaccinationSites, total] = await this.vaccinationSiteRepository.findAndCount({
       where: whereConditions,
       relations: ['ward', 'ward.district', 'ward.district.province'],
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-
+  
     if (vaccinationSites.length === 0) {
       throw new NotFoundException('No vaccination sites found matching the criteria');
     }
-
+  
     return [vaccinationSites, total];
   }
 
