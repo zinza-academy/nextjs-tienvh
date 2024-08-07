@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query, ParseIntPipe, Patch, Post, UseGuards, UseInterceptors, ValidationPipe, ForbiddenException, Request } from "@nestjs/common";
+import { Body, Controller, Get, Query, ParseIntPipe, Patch, Post, UseGuards, UseInterceptors, ValidationPipe, ForbiddenException, Request, Param } from "@nestjs/common";
 import { Role } from "common/enums/user.enum";
 import { PaginationInterceptor } from "common/interceptors/pagination.interceptor";
 import { AllowedRoles } from "modules/auth/decorators/roles-route.decorator";
@@ -6,8 +6,8 @@ import { RoleGuard } from "modules/auth/guard/roles.guard";
 import { VaccinesRegistrationDto, UpdateVaccinesRegistrationDto } from "./dto/registration.dto";
 import { PaginationDto } from "modules/vaccination-sites/dto/vaccination-sites.dto";
 import { VaccinesRegistrationService } from "./registration.service";
-import { JwtAuthGuard } from "modules/auth/guard/jwt-auth.guard";
-@Controller('vaccines-registration')
+
+@Controller('vaccines-registrations')
 export class VaccinesRegistrationController {
   constructor(private readonly vaccinesRegistrationService: VaccinesRegistrationService) {}
   @Get()
@@ -20,9 +20,9 @@ export class VaccinesRegistrationController {
     }
   }
   
-  @Get('details')
-  async findOne(@Query('id', ParseIntPipe) id: number, @Request() req) {
-    return this.vaccinesRegistrationService.findOne(id);
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.vaccinesRegistrationService.findOne(+id);
   }
 
   @Post()
@@ -31,27 +31,27 @@ export class VaccinesRegistrationController {
     return this.vaccinesRegistrationService.create(createDto);
   }
 
-  @Patch()
+  @Patch(':id')
   @UseGuards(RoleGuard)
   @AllowedRoles(Role.ADMIN)
   async update(
-    @Query('id', ParseIntPipe) id: number, 
+    @Param('id', ParseIntPipe) id: number, 
     @Body(ValidationPipe) updateDto: UpdateVaccinesRegistrationDto
   ) {
-    return this.vaccinesRegistrationService.update(id, updateDto);
+    return this.vaccinesRegistrationService.update(+id, updateDto);
   }
 
-  @Patch('approve')
+  @Patch(':id/approve')
   @UseGuards(RoleGuard)
   @AllowedRoles(Role.ADMIN)
-  async approveRegistration(@Query('id', ParseIntPipe) id: number) {
-    return this.vaccinesRegistrationService.approveRegistration(id);
+  async approveRegistration(@Param('id', ParseIntPipe) id: number) {
+    return this.vaccinesRegistrationService.approveRegistration(+id);
   }
 
-  @Patch('inject')
+  @Patch(':id/inject')
   @UseGuards(RoleGuard)
   @AllowedRoles(Role.ADMIN)
-  async markAsInjected(@Query('id', ParseIntPipe) id: number) {
-    return this.vaccinesRegistrationService.markAsInjected(id);
+  async markAsInjected(@Param('id', ParseIntPipe) id: number) {
+    return this.vaccinesRegistrationService.markAsInjected(+id);
   }
 }
