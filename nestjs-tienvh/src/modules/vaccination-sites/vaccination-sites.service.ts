@@ -5,13 +5,16 @@ import { VaccinationSite } from "entities/vaccination-site.entity";
 import { Wards } from "entities/wards.entity";
 import { Like, Repository } from "typeorm";
 import { CreateVaccinationSiteDto, FindVaccinationSiteByWardIdDto, PaginationDto, SearchVaccinationSiteDto, UpdateVaccinationSiteDto } from "./dto/vaccination-sites.dto";
+import { Vaccines } from "entities/vaccines.entity";
 @Injectable()
 export class VaccinationSitesService {
   constructor(
     @InjectRepository(VaccinationSite)
     private vaccinationSiteRepository: Repository<VaccinationSite>,
     @InjectRepository(Wards)
-    private wardRepository: Repository<Wards>
+    private wardRepository: Repository<Wards>,
+    @InjectRepository(Vaccines)
+    private vaccinesRepository: Repository<Vaccines>
   ) {}
 
   async findAll(dto: PaginationDto): Promise<[VaccinationSite[], number]> {
@@ -92,6 +95,13 @@ export class VaccinationSitesService {
     if (!ward) {
       throw new NotFoundException('Invalid ward');
     }
+    if (createVaccinationSite.vaccine_id) {
+      const vaccineExists = await this.checkVaccineExists(createVaccinationSite.vaccine_id);
+      if (!vaccineExists) {
+        throw new NotFoundException('Invalid vaccine');
+      }
+    }
+
     const vaccinationSite = this.vaccinationSiteRepository.create({
       ...createVaccinationSite,
       ward,
@@ -115,7 +125,12 @@ export class VaccinationSitesService {
         throw new ConflictException('Vaccination site with this name already exists');
       }
     }
-  
+    if (updateVaccinationSiteDto.vaccine_id) {
+      const vaccineExists = await this.checkVaccineExists(updateVaccinationSiteDto.vaccine_id);
+      if (!vaccineExists) {
+        throw new NotFoundException('Invalid vaccine');
+      }
+    }
     if (updateVaccinationSiteDto.ward_id) {
       const ward = await this.wardRepository.findOne({
         where: { id: updateVaccinationSiteDto.ward_id },
@@ -149,5 +164,12 @@ export class VaccinationSitesService {
   
     const count = await query.getCount();
     return count > 0;
+  }
+
+  async checkVaccineExists(vaccineId: number): Promise<boolean> {
+    const vaccine = await this.vaccinesRepository.findOne({
+      where: { id: vaccineId }
+    });
+    return !!vaccine;
   }
 }
