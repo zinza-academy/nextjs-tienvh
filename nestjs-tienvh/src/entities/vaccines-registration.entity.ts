@@ -5,6 +5,7 @@ import { Vaccines } from "./vaccines.entity";
 import { Schedules } from './schedules.entity';
 import { Jobs } from './jobs.entity';
 import { PriorityGroups } from './priority_groups.entity';
+import { getRegistrationStatusEnum, getRegistrationStatusString, RegistrationStatus } from 'common/enums/vaccine-registration.enum';
 
 @Entity()
 export class VaccinesRegistration {
@@ -17,10 +18,15 @@ export class VaccinesRegistration {
   @Column({ type: 'varchar', length: 255 })
   work_place: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  status: string;
+  @Column({ type: 'varchar',
+    length: 255,
+    transformer: {
+      to: (value: RegistrationStatus) =>  getRegistrationStatusString(value),
+      from: (value: string) => getRegistrationStatusEnum(value),
+    }, })
+  status: RegistrationStatus;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'datetime', nullable: true })
   time_injection: Date;
 
   @ManyToOne(() => VaccinationSite,(vaccinationSite) => vaccinationSite.vaccinesRegistrations)
