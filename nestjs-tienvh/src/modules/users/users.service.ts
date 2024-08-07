@@ -35,6 +35,19 @@ export class UsersService {
     return createResponse(userDtos, 'Users retrieved successfully', HttpStatus.OK);
   }
 
+  async findOne(id: number): Promise<ApiResponse<ReceiveUserDto>> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['ward', 'ward.district', 'ward.district.province'],
+    });
+    
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    const userDtos = UsersMapper.toDto(user);
+    return createResponse(userDtos, 'Users retrieved successfully', HttpStatus.OK);
+  }
+
   async create(createUser: UserDto): Promise<ApiResponse<ReceiveUserDto>> {
     await this.checkEmailExists(createUser.email);
     const hashedPassword = await bcrypt.hash(createUser.password, 10);
