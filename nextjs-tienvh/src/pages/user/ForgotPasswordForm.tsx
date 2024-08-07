@@ -63,10 +63,12 @@ export default function ForgotPasswordForm() {
       }}
     >
       <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
-        <Typography variant="body1" sx={{ textAlign: "center" }} mb={2}>
-          Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để đăng ký{" "}
-          <span style={{ color: "red" }}>(*)</span>
-        </Typography>
+        <Box sx={{ display:'flex', flexDirection: 'row' }}>
+          <Typography variant="body1" sx={{ textAlign: "center" }} mb={2}>
+            Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để đăng ký{" "}
+          </Typography>
+          <Typography style={{ color: "red" }}>(*)</Typography>
+        </Box>
         <TextField
           fullWidth
           type="email"
