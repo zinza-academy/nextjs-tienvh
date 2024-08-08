@@ -1,21 +1,19 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Typography from "@mui/material/Typography";
-import { Alert, Snackbar, TextField } from "@mui/material";
+import useForgotPassword from "@/api/auth-api/forgot-password.api";
+import { Alert, Container, Snackbar, Stack, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { Container, Stack } from "@mui/material";
-import { useForm, SubmitHandler } from "react-hook-form";
-import useForgotPassword from "@/api/auth-api/forgot-password.api";
-import axios, { AxiosError } from "axios";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 interface ForgotPasswordFormData {
   email: string
 }
 
 export default function ForgotPasswordForm() {
-  // const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState<'success' | 'error'>('success');
@@ -33,24 +31,22 @@ export default function ForgotPasswordForm() {
 
   const forgotPasswordMutation = useForgotPassword();
   
-  const onSubmit: SubmitHandler<ForgotPasswordFormData> = data => {
-    forgotPasswordMutation.mutate(data, {
-      onSuccess: (response) => {
-        setAlertMessage('Password reset email sent successfully. Please check your email.');
-        setAlertSeverity('success');
-        setOpen(true);
-      },
-      onError: (error: Error) => {
-        if (axios.isAxiosError(error)) {
-          const errorMessage = error.response?.data?.message || 'Failed to send password reset email';
-          setAlertMessage(errorMessage);
-        } else {
-          setAlertMessage('An unexpected error occurred.');
-        }
-        setAlertSeverity('error');
-        setOpen(true);
+  const onSubmit: SubmitHandler<ForgotPasswordFormData> = async (data) => {
+    try {
+      const response = await forgotPasswordMutation.mutateAsync(data);
+      setAlertMessage('Password reset email sent successfully. Please check your email.');
+      setAlertSeverity('success');
+      setOpen(true);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || 'Failed to send password reset email';
+        setAlertMessage(errorMessage);
+      } else {
+        setAlertMessage('An unexpected error occurred.');
       }
-    });
+      setAlertSeverity('error');
+      setOpen(true);
+    }
   };
 
   return (
