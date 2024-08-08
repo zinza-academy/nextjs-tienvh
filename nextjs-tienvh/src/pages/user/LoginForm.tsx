@@ -12,10 +12,11 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/store';
-import { loginUser, clearError } from '@/redux/slices/LoginSlice';
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import React from 'react';
+import useLogin from '@/api/auth-api/login.api';
+import { clearError, loginFailure, loginSuccess } from '@/redux/slices/LoginSlice';
 
 
 const schema = yup.object().shape({
@@ -39,8 +40,25 @@ export default function LoginForm() {
   const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const { isLoading, token, error } = useSelector((state: RootState) => state.login);
-  
+  const login = useLogin();
+  const { isAuthenticated, error } = useSelector((state: RootState) => state.login);
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+    dispatch(clearError());
+    try {
+      await login.mutateAsync(data);
+      dispatch(loginSuccess());
+      setOpen(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    } catch (err) {
+      if (err instanceof Error) {
+        dispatch(loginFailure(err.message));
+      } else {
+        dispatch(loginFailure("Có lỗi xảy ra khi đăng nhập"));
+      }
+    }
+  };
   const {
     register,
     handleSubmit,
@@ -50,17 +68,6 @@ export default function LoginForm() {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
-    dispatch(clearError());
-    try {
-      await dispatch(loginUser(data)).unwrap();
-      setOpen(true);
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
-    } catch (err) {
-    }
-  };
 
 
   return (
@@ -79,7 +86,7 @@ export default function LoginForm() {
         </Typography>
 
         <Box sx={{display: 'flex', flexDirection: 'column'}}>
-          <label style={{paddingBottom: '5px'}}>Email</label>
+          <Typography>Email</Typography>
           <TextField
             type="email"
             placeholder="Nhập email của bạn"
@@ -99,7 +106,7 @@ export default function LoginForm() {
         </Box>
 
         <Box sx={{display: 'flex', flexDirection: 'column'}}>
-          <label style={{paddingBottom: '5px'}}>Mật khẩu</label>
+          <Typography>Mật khẩu</Typography>
           <TextField
             type="password"
             placeholder="Nhập mật khẩu của bạn"
@@ -138,7 +145,7 @@ export default function LoginForm() {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={!isValid || isLoading}
+          disabled={!isValid || login.isPending || login.isSuccess}
           sx={{
             fontWeight: 'bold',
             fontSize: '16px',
@@ -150,7 +157,7 @@ export default function LoginForm() {
             },
           }}
         >
-          {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+          {login.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </Button>
         <Snackbar open={open} autoHideDuration={3000} onClose={() => setOpen(false)}>
           <Alert

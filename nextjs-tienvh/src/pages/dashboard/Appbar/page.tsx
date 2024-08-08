@@ -1,34 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  Box, Typography, MenuList, MenuItem, Button, Menu as MenuMaterial, 
-  IconButton, Backdrop, CircularProgress 
+import useLogout from '@/api/auth-api/logout.api';
+import { getRoleString } from '@/components/common/enum';
+import { useUserQuery } from '@/redux/slices/UserSlice';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import EastIcon from '@mui/icons-material/East';
+import GroupIcon from '@mui/icons-material/Group';
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  MenuItem,
+  MenuList,
+  Menu as MenuMaterial,
+  Typography
 } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import GroupIcon from '@mui/icons-material/Group';
-import EastIcon from '@mui/icons-material/East';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { clearToken } from '@/redux/slices/LoginSlice';
-import { fetchUser } from '@/redux/slices/UserSlice';
-import { useAppSelector, useAppDispatch } from '@/lib/store';
-
-
+import React, { useState } from 'react';
 
 function Menu() {
-  const dispatch = useAppDispatch();
-  const token = useAppSelector((state) => state.login.token);
-  const { user, isLoading, error } = useAppSelector((state) => state.user);
-  
+  const { data: user, isLoading, error } = useUserQuery();
+  const logout = useLogout();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(null);
   const [showUserInfo, setShowUserInfo] = useState(false);
-
-  useEffect(() => {
-    if (token && !user) {
-      dispatch(fetchUser());
-    }
-  }, [token, user, dispatch]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -46,9 +43,13 @@ function Menu() {
     setUserMenuAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    dispatch(clearToken());
-    handleUserMenuClose();
+  const handleLogout = async () => {
+    try {
+      await logout.mutateAsync();
+      handleUserMenuClose();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const handleUserInfoClose = () => {
@@ -66,14 +67,15 @@ function Menu() {
       return <CircularProgress size={24} />;
     }
 
-    if (token) {
+    if (user) {
       return (
-        <>
-          <MenuItem onClick={handleUserMenuClick}>
-            <Typography>{user?.name || 'User'}</Typography>
+        [
+          <MenuItem key="userMenu" onClick={handleUserMenuClick}>
+            <Typography>{user.name}</Typography>
             <ArrowDropDownIcon />
-          </MenuItem>
+          </MenuItem>,
           <MenuMaterial
+            key="userMenuMaterial"
             anchorEl={userMenuAnchorEl}
             open={Boolean(userMenuAnchorEl)}
             onClose={handleUserMenuClose}
@@ -83,10 +85,11 @@ function Menu() {
               <MenuItem onClick={handleUserInfoClick}>Thông tin cá nhân</MenuItem>
               <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
             </Box>
-          </MenuMaterial>
+          </MenuMaterial>,
           
-          {showUserInfo && (
+          showUserInfo && (
             <Backdrop
+              key="userInfoBackdrop"
               open={showUserInfo}
               onClick={handleUserInfoClose}
               sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -112,24 +115,27 @@ function Menu() {
                 
                 {error && (
                   <Typography color="error" variant="body1">
-                    {error}
+                    {error.message}
                   </Typography>
                 )}
                 
                 {user && (
                   <Box sx={{textAlign: 'center'}}>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
+                    <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
                       Xin chào, {user.name}
                     </Typography>
                     <Typography variant="body1">
                       Email: {user.email}
                     </Typography>
+                    <Typography variant="body1" textAlign={'left'}>
+                      Role: {getRoleString(user.role)}
+                    </Typography>
                   </Box>
                 )}
               </Box>
             </Backdrop>
-          )}
-        </>
+          )
+        ]
       );
     }
 
@@ -199,7 +205,7 @@ function Menu() {
                 </Box>
                 <Typography variant='body1' sx={{textAlign: 'center'}}>
                   Tra cứu chứng nhận tiêm
-                  <span style={{display: 'block', fontSize:'12px'}}>Cập nhật nhanh và chính xác nhất</span>
+                  <Typography style={{display: 'block', fontSize:'12px'}}>Cập nhật nhanh và chính xác nhất</Typography>
                 </Typography>
                 <EastIcon sx={{color: '#5E35B1'}}/>
               </Box>
@@ -221,7 +227,7 @@ function Menu() {
                 </Box>
                 <Typography variant='body1' sx={{textAlign: 'center'}}>
                   Tra cứu kết quả đăng ký
-                  <span style={{display: 'block', fontSize:'12px'}}>Cập nhật nhanh và chính xác nhất</span>
+                  <Typography style={{display: 'block', fontSize:'12px'}}>Cập nhật nhanh và chính xác nhất</Typography>
                 </Typography>
                 <EastIcon sx={{color: '#1E88E5'}}/>
               </Box>

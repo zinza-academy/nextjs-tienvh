@@ -1,47 +1,49 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { useQuery } from '@tanstack/react-query';
+import { getUserFromToken } from '@/utils/decode-access-token';
+import { Role } from '@/components/common/enum';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: Role;
+}
 
 interface UserState {
-  user: {
-    name: string;
-    email: string;
-  } | null;
-  isLoading: boolean;
-  error: string | null;
+  user: User | null;
 }
 
 const initialState: UserState = {
-  user: null, 
-  isLoading: false,
-  error: null, 
+  user: null,
 };
-
-export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWithValue }) => {
-  return new Promise<{ name: string; email: string }>((resolve, reject) => {
-    setTimeout(() => {
-      resolve({ name: 'example', email: 'user@example.com' });
-    }, 2000);
-  });
-});
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchUser.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchUser.fulfilled, (state, action: PayloadAction<{ name: string; email: string }>) => {
-        state.user = action.payload;
-        state.isLoading = false;
-      })
-      .addCase(fetchUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message || 'No data user';
-      });
+  reducers: {
+    setUser: (state, action: PayloadAction<User | null>) => {
+      state.user = action.payload;
+    },
   },
 });
 
+export const { setUser } = userSlice.actions;
+
 export default userSlice.reducer;
+
+export const useUserQuery = () => {
+  return useQuery<User | null, Error>({
+    queryKey: ['user'],
+    queryFn: async () => {
+      const user = getUserFromToken();
+      if (user) {
+        return user;
+      } else {
+        return null;
+      }
+    },
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+};
