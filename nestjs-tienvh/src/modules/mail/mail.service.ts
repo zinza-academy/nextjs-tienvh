@@ -11,10 +11,8 @@ export class MailService {
 
   async sendForgotPasswordEmail(toEmail: string, token: string) {
     try {
-      const url = `${this.configService.get(
-        'CORS_ORIGIN',
-      )}/reset-password/?token=${token}`;
-
+      const baseUrl = this.configService.get('CORS_ORIGIN');
+      const url = `${baseUrl}/user/reset-password?token=${token}`;
       await this.mailerService.sendMail({
         to: toEmail,
         from: `"Vaccine Portal Support" <${this.configService.get('MAIL_FROM')}>`,

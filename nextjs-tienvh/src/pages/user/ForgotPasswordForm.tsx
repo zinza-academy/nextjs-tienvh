@@ -1,20 +1,22 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Typography from "@mui/material/Typography";
-import { TextField } from "@mui/material";
+import useForgotPassword from "@/api/auth-api/forgot-password.api";
+import { Alert, Container, Snackbar, Stack, TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { Container, Stack } from "@mui/material";
-import { useForm, SubmitHandler } from "react-hook-form";
-import theme from "@/lib/theme";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 interface ForgotPasswordFormData {
   email: string
 }
 
 export default function ForgotPasswordForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState<'success' | 'error'>('success');
   const router = useRouter();
   const {
     register,
@@ -27,16 +29,24 @@ export default function ForgotPasswordForm() {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<ForgotPasswordFormData> = data => {
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-
-    // Fake request
-    setTimeout(() => {
-      setIsSubmitting(false);
-      router.push("/user/login");
-    }, 2000);
+  const forgotPasswordMutation = useForgotPassword();
+  
+  const onSubmit: SubmitHandler<ForgotPasswordFormData> = async (data) => {
+    try {
+      const response = await forgotPasswordMutation.mutateAsync(data);
+      setAlertMessage('Password reset email sent successfully. Please check your email.');
+      setAlertSeverity('success');
+      setOpen(true);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || 'Failed to send password reset email';
+        setAlertMessage(errorMessage);
+      } else {
+        setAlertMessage('An unexpected error occurred.');
+      }
+      setAlertSeverity('error');
+      setOpen(true);
+    }
   };
 
   return (
@@ -49,10 +59,12 @@ export default function ForgotPasswordForm() {
       }}
     >
       <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ p: 4 }}>
-        <Typography variant="body1" sx={{ textAlign: "center" }} mb={2}>
-          Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để đăng ký{" "}
-          <span style={{ color: "red" }}>(*)</span>
-        </Typography>
+        <Box sx={{ display:'flex', flexDirection: 'row' }}>
+          <Typography variant="body1" sx={{ textAlign: "center" }} mb={2}>
+            Để khôi phục mật khẩu, vui lòng nhập đúng email bạn đã dùng để đăng ký{" "}
+          </Typography>
+          <Typography style={{ color: "red" }}>(*)</Typography>
+        </Box>
         <TextField
           fullWidth
           type="email"
@@ -60,7 +72,7 @@ export default function ForgotPasswordForm() {
           margin="normal"
           error={!!errors.email}
           helperText={errors.email?.message}
-          {...register("email", { required: "Email không được để trống" })}
+          {...register("email", { required: "Email is not empty" })}
         />
         <Box sx={{ display: "flex", justifyContent: "center" }} mt={2}>
           <Stack
@@ -87,7 +99,7 @@ export default function ForgotPasswordForm() {
             <Button
               type="submit"
               variant="contained"
-              disabled={!isValid || isSubmitting}
+              disabled={!isValid || forgotPasswordMutation.isPending || forgotPasswordMutation.isSuccess}
               sx={{
                 flexGrow: 1,
                 minWidth: "100px",
@@ -99,11 +111,26 @@ export default function ForgotPasswordForm() {
                 borderRadius: "8px 8px 8px 0",
               }}
             >
-              GỬI
+               GỬI
             </Button>
           </Stack>
         </Box>
       </Box>
+
+      <Snackbar
+        open={open}
+        autoHideDuration={3000}
+        onClose={() => setOpen(false)}
+      >
+        <Alert
+          onClose={() => setOpen(false)}
+          severity={alertSeverity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
