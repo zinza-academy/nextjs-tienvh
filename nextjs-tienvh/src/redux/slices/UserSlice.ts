@@ -1,29 +1,27 @@
+import api from '@/api/api';
+import { Gender, Role } from '@/components/common/enum';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { useQuery } from '@tanstack/react-query';
-import { getUserFromToken } from '@/utils/decode-access-token';
-import { Role } from '@/components/common/enum';
 
 interface User {
   id: number;
-  name: string;
+  cmt: string;
   email: string;
+  name: string;
+  dob: Date;
+  gender: Gender;
+  province_id: number;
+  district_id: number;
+  ward_id: number;
   role: Role;
 }
 
-interface UserState {
-  user: User | null;
-}
-
-const initialState: UserState = {
-  user: null,
-};
-
 const userSlice = createSlice({
   name: 'user',
-  initialState,
+  initialState: null as User | null,
   reducers: {
     setUser: (state, action: PayloadAction<User | null>) => {
-      state.user = action.payload;
+      return action.payload;
     },
   },
 });
@@ -32,18 +30,18 @@ export const { setUser } = userSlice.actions;
 
 export default userSlice.reducer;
 
+const fetchUser = async (): Promise<User> => {
+  const { data } = await api.get<{ data: User }>('/users/me', { withCredentials: true });
+  return data.data;
+};
+
 export const useUserQuery = () => {
-  return useQuery<User | null, Error>({
+  return useQuery<User, Error>({
     queryKey: ['user'],
-    queryFn: async () => {
-      const user = getUserFromToken();
-      if (user) {
-        return user;
-      } else {
-        return null;
-      }
-    },
+    queryFn: fetchUser,
+    staleTime: 5 * 60 * 1000,
     retry: false,
     refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 };

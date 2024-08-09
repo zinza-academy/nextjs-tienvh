@@ -22,6 +22,7 @@ import React, { useState } from 'react';
 
 function Menu() {
   const { data: user, isLoading, error } = useUserQuery();
+  console.log(user);
   const logout = useLogout();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<HTMLElement | null>(null);
@@ -46,6 +47,7 @@ function Menu() {
   const handleLogout = async () => {
     try {
       await logout.mutateAsync();
+      window.location.reload();
       handleUserMenuClose();
     } catch (error) {
       console.error('Logout failed:', error);
