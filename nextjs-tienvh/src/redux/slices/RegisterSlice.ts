@@ -1,5 +1,19 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { Gender } from '@/components/common/enum';
+import { createSlice } from '@reduxjs/toolkit';
 
+interface FormData {
+  cmt: string;
+  email: string;
+  password: string;
+  name: string;
+  dob: string;
+  gender: Gender;
+  province_id: number;
+  district_id: number;
+  ward_id: number;
+}
+
+export type RegisterCredentials = FormData;
 interface RegisterState {
   isLoading: boolean;
   error: string | null;
@@ -12,58 +26,26 @@ const initialState: RegisterState = {
   success: false,
 };
 
-export interface RegisterCredentials {
-  cmt: string;
-  email: string;
-  password: string;
-  name: string;
-  dob: string;
-  gender: string;
-  province: number;
-  district: number;
-  ward: number;
-}
-
-export const register = createAsyncThunk(
-  'register/registerUser',
-  async (credentials: RegisterCredentials, { rejectWithValue }) => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-    } catch (error) {
-      return rejectWithValue('Đăng ký thất bại. Vui lòng thử lại.');
-    }
-  }
-);
-
 const registerSlice = createSlice({
   name: 'register',
   initialState,
   reducers: {
+    setLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    setSuccess: (state, action) => {
+      state.success = action.payload;
+    },
     clearRegisterState: (state) => {
       state.isLoading = false;
       state.error = null;
       state.success = false;
     },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(register.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-        state.success = false;
-      })
-      .addCase(register.fulfilled, (state) => {
-        state.isLoading = false;
-        state.error = null;
-        state.success = true;
-      })
-      .addCase(register.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
-        state.success = false;
-      });
-  },
 });
 
-export const { clearRegisterState } = registerSlice.actions;
+export const { setLoading, setError, setSuccess, clearRegisterState } = registerSlice.actions;
 export default registerSlice.reducer;

@@ -72,10 +72,11 @@ export class UsersService {
     if (!ward) {
       throw new NotFoundException('Invalid ward');
     }
-
+    const dobDate = new Date(createUser.dob);
     const userEntity = UsersMapper.toCreateEntity(createUser);
     userEntity.role = 1;
     userEntity.password = hashedPassword;
+    userEntity.dob = dobDate;
     const savedUser = await this.userRepository.save(userEntity);
   
     const fullUser = await this.userRepository.findOne({
@@ -138,6 +139,9 @@ export class UsersService {
     }
     if (updateUser.password) {
       updatedUserEntity.password = await bcrypt.hash(updateUser.password, 10);
+    }
+    if (updateUser.dob) {
+      updatedUserEntity.dob = new Date(updateUser.dob);
     }
     const savedUser = await this.userRepository.save(updatedUserEntity);
   
