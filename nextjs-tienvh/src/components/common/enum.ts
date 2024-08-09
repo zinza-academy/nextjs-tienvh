@@ -7,7 +7,7 @@ export enum ApprovalStatus {
 export enum Gender {
   MALE = 1,
   FEMALE = 2,
-  OTHER = 3 
+  OTHER = 3
 }
 export enum Role {
   ADMIN,
