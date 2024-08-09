@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { AllowedRoles } from 'modules/auth/decorators/roles-route.decorator';
 import { Role } from 'common/enums/user.enum';
 import { RoleGuard } from 'modules/auth/guard/roles.guard';
+import { JwtAuthGuard } from 'modules/auth/guard/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -15,6 +16,11 @@ export class UsersController {
   @AllowedRoles(Role.ADMIN)
   async findAll(): Promise<ApiResponse<ReceiveUserDto[]>> {
     return this.userService.findAll();
+  }
+
+  @Get('me')
+  async getMe(@Request() req): Promise<ApiResponse<ReceiveUserDto>> {
+    return this.userService.findOne(req.user.id);
   }
   
   @Get(':id')

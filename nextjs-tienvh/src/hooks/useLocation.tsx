@@ -49,6 +49,7 @@ export const useLocation = (): UseLocationResult => {
           const response = await axios.get(`${apiPrefix}/provinces`);
           return response.data.data;
         },
+        staleTime: 5 * 60 * 1000,
       },
       {
         queryKey: ['districts', provinceId],
@@ -59,6 +60,7 @@ export const useLocation = (): UseLocationResult => {
           });
           return response.data.data;
         },
+        staleTime: 5 * 60 * 1000,
         enabled: !!provinceId,
       },
       {
@@ -70,6 +72,7 @@ export const useLocation = (): UseLocationResult => {
           });
           return response.data.data;
         },
+        staleTime: 5 * 60 * 1000,
         enabled: !!districtId,
       },
     ],

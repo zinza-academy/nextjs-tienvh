@@ -33,12 +33,8 @@ const logoutApi = async (): Promise<LogoutResponseType> => {
 
 const useLogout = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: logoutApi,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-    },
   });
 };
 
