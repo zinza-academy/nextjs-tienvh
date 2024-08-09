@@ -9,7 +9,6 @@ import useResetPassword from '@/api/auth-api/reset-password';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-// Cập nhật schema với xác thực mật khẩu và xác nhận mật khẩu
 const schema = yup.object().shape({
   newPassword: yup
     .string()
@@ -46,41 +45,39 @@ export default function ResetPasswordForm() {
   });
   
   const resetPasswordMutation = useResetPassword();
-  const onSubmit: SubmitHandler<ResetPasswordFormData> = data => {
+  const onSubmit: SubmitHandler<ResetPasswordFormData> = async (data) => {
     if (token) {
       const variables = {
         password: data.newPassword,
         token: token,
       };
-
-      resetPasswordMutation.mutate(variables, {
-        onSuccess: (response) => {
-          setAlertMessage('Password reset successful. You can now log in with your new password.');
-          setAlertSeverity('success');
-          setOpen(true);
-
-          setTimeout(() => {
-            router.push('/user/login');
-          }, 3000);
-        },
-        onError: (error: Error) => {
-          if (axios.isAxiosError(error)) {
-            const errorMessage = error.response?.data?.message || 'Failed to reset password';
-            setAlertMessage(errorMessage);
-          } else {
-            setAlertMessage('An unexpected error occurred.');
-          }
-          setAlertSeverity('error');
-          setOpen(true);
+  
+      try {
+        const response = await resetPasswordMutation.mutateAsync(variables);
+        setAlertMessage('Password reset successful. You can now log in with your new password.');
+        setAlertSeverity('success');
+        setOpen(true);
+  
+        setTimeout(() => {
+          router.push('/user/login');
+        }, 3000);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const errorMessage = error.response?.data?.message || 'Failed to reset password';
+          setAlertMessage(errorMessage);
+        } else {
+          setAlertMessage('An unexpected error occurred.');
         }
-      });
+        setAlertSeverity('error');
+        setOpen(true);
+      }
     } else {
       setAlertMessage('Invalid or missing token.');
       setAlertSeverity('error');
       setOpen(true);
     }
   };
-
+  
   return (
     <Container
       sx={{
@@ -116,7 +113,7 @@ export default function ResetPasswordForm() {
           <Button
             type="submit"
             variant="contained"
-            disabled={!isValid || resetPasswordMutation.isPending}
+            disabled={!isValid || resetPasswordMutation.isPending || resetPasswordMutation.isSuccess}
             sx={{
               minWidth: "100px",
               backgroundColor: theme => theme.palette.primary.dark,
