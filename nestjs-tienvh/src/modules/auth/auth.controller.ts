@@ -17,6 +17,7 @@ import { RegisterDTO } from './dto/register.dto';
     async login(@Body(ValidationPipe) loginDto: LoginDTO, @Res({ passthrough: true }) res: Response) {
       const { access_token } = await this.authService.login(loginDto);
       res.cookie('access_token', access_token, {
+        httpOnly: true,
         sameSite: 'strict',
         maxAge: 30 * 60 * 1000
       });
