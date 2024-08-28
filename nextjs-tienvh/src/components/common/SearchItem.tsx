@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Select, MenuItem, TextField, Button, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Divider } from '@mui/material';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useVaccination } from '@/api/vaccination-site/search-item.api';
+import { useLocation } from '@/hooks/useLocation';
 import SearchIcon from '@mui/icons-material/Search';
+import { Box, Button, colors, Divider, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { tableCellClasses } from '@mui/material/TableCell';
-import locationData, { District, Ward } from './FakeData';
-
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -27,40 +27,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-//Fake data
-const generateFakeData = (count: number): VaccinationPoint[] => {
-  const data: VaccinationPoint[] = [];
-  for (let i = 1; i <= count; i++) {
-    data.push({
-      id: i,
-      name: `Điểm tiêm ${i}`,
-      streetAddress: `${i * 100} Đường ${String.fromCharCode(65 + (i % 26))}`,
-      wardId: (i % 3) + 1,
-      districtId: (i % 2) + 1,
-      provinceId: (i % 2) + 1,
-      manager: `Quản lý ${i}`,
-      tables: (i % 5) + 1
-    });
-  }
-  return data;
-};
-
-
-const fakeVaccinationPoints: VaccinationPoint[] = generateFakeData(100);
-
-interface VaccinationPoint {
-  id: number;
-  name: string;
-  streetAddress: string;
-  wardId: number;
-  districtId: number;
-  provinceId: number;
-  manager: string;
-  tables: number;
-}
-
 const VaccinationLookup = () => {
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, watch } = useForm({
     defaultValues: {
       province: '',
       district: '',
@@ -68,74 +36,40 @@ const VaccinationLookup = () => {
     }
   });
 
-  const provinceId = useWatch({ control, name: 'province' });
-  const districtId = useWatch({ control, name: 'district' });
-
-  const [districts, setDistricts] = useState<District[]>([]);
-  const [wards, setWards] = useState<Ward[]>([]);
-  const [results, setResults] = useState<VaccinationPoint[]>(fakeVaccinationPoints);
+  const { provinces, districts, wards, setProvinceId, setDistrictId } = useLocation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [wardId, setWardId] = useState<number | null>(null);
+
+  const { data: vaccinationData, isLoading, error, refetch } = useVaccination({
+    page: page + 1,
+    pageSize: rowsPerPage,
+    ward_id: wardId,
+  });
+
+  const watchProvince = watch('province');
+  const watchDistrict = watch('district');
 
   useEffect(() => {
-    if (provinceId) {
-      const selectedProvince = locationData.find(p => p.id === parseInt(provinceId));
-      setDistricts(selectedProvince ? selectedProvince.districts : []);
-      setWards([]);
-    } else {
-      setDistricts([]);
-      setWards([]);
+    if (watchProvince) {
+      setProvinceId(Number(watchProvince));
     }
-  }, [provinceId]);
+  }, [watchProvince, setProvinceId]);
 
   useEffect(() => {
-    if (districtId) {
-      const selectedDistrict = locationData
-        .find(p => p.id === parseInt(provinceId))
-        ?.districts.find(d => d.id === parseInt(districtId));
-      setWards(selectedDistrict ? selectedDistrict.wards : []);
-    } else {
-      setWards([]);
+    if (watchDistrict) {
+      setDistrictId(Number(watchDistrict));
     }
-  }, [districtId, provinceId]);
+  }, [watchDistrict, setDistrictId]);
 
   const onSubmit = (data: { province: string; district: string; ward: string }) => {
-    const { province, district, ward } = data;
-  
-    const filteredResults = fakeVaccinationPoints.filter((point) => {
-      return (!province || point.provinceId === parseInt(province)) &&
-             (!district || point.districtId === parseInt(district)) &&
-             (!ward || point.wardId === parseInt(ward));
-    });
-  
-    setResults(filteredResults);
-    setPage(0);
-  };
-  
-
-  const getLocationNameFromData = (type: 'province' | 'district' | 'ward', id: number): string => {
-    switch (type) {
-      case 'province':
-        return locationData.find(p => p.id === id)?.name || '';
-      case 'district':
-        for (const province of locationData) {
-          const district = province.districts.find(d => d.id === id);
-          if (district) return district.name;
-        }
-        return '';
-      case 'ward':
-        for (const province of locationData) {
-          for (const district of province.districts) {
-            const ward = district.wards.find(w => w.id === id);
-            if (ward) return ward.name;
-          }
-        }
-        return '';
-      default:
-        return '';
+    if (data.ward) {
+      setWardId(Number(data.ward));
+    } else {
+      setWardId(null);
     }
+    refetch();
   };
-  
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -146,6 +80,8 @@ const VaccinationLookup = () => {
     setPage(0);
   };
 
+  if (provinces.isLoading || districts.isLoading || wards.isLoading || isLoading) 
+    return <Typography sx={{ margin: '22px 36px' }}>Đang tải...</Typography>;
 
   return (
     <Box sx={{ marginX: '36px', marginTop:'22px', minHeight: '638px',borderRadius: '16px',
@@ -166,9 +102,9 @@ const VaccinationLookup = () => {
               }}
               sx={{width: '260px',minWidth: '130px'}}>
               <MenuItem value="">Chọn tỉnh</MenuItem>
-              {locationData.map((province) => (
-                <MenuItem key={province.id} value={province.id.toString()}>{province.name}</MenuItem>
-              ))}
+              {provinces.data?.map((province) => (
+                  <MenuItem key={province.id} value={province.id.toString()}>{province.name}</MenuItem>
+                ))}
             </Select>
           )}
         />
@@ -180,11 +116,11 @@ const VaccinationLookup = () => {
               MenuProps={{
                 disableScrollLock: true
               }}
-              sx={{width: '260px',minWidth: '130px'}} disabled={!provinceId}>
+              sx={{width: '260px',minWidth: '130px'}} disabled={!watchProvince}>
               <MenuItem value="">Chọn huyện</MenuItem>
-              {districts.map((district) => (
-                <MenuItem key={district.id} value={district.id.toString()}>{district.name}</MenuItem>
-              ))}
+              {districts.data?.map((district) => (
+                  <MenuItem key={district.id} value={district.id.toString()}>{district.name}</MenuItem>
+                ))}
             </Select>
           )}
         />
@@ -196,11 +132,11 @@ const VaccinationLookup = () => {
               MenuProps={{
                 disableScrollLock: true
               }}
-              sx={{width: '260px',minWidth: '130px'}} disabled={!districtId}>
+              sx={{width: '260px',minWidth: '130px'}} disabled={!watchDistrict}>
               <MenuItem value="">Chọn xã</MenuItem>
-              {wards.map((ward) => (
-                <MenuItem key={ward.id} value={ward.id.toString()}>{ward.name}</MenuItem>
-              ))}
+              {wards.data?.map((ward) => (
+                  <MenuItem key={ward.id} value={ward.id.toString()}>{ward.name}</MenuItem>
+                ))}
             </Select>
           )}
         />
@@ -227,33 +163,31 @@ const VaccinationLookup = () => {
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {results
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => (
+              {vaccinationData?.data.map((row, index) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell align='center'>{page * rowsPerPage + index + 1}</StyledTableCell>
                   <StyledTableCell align='center'>{row.name}</StyledTableCell>
-                  <StyledTableCell align='center'>{row.streetAddress}</StyledTableCell>
-                  <StyledTableCell align='center'>{getLocationNameFromData('ward', row.wardId)}</StyledTableCell>
-                  <StyledTableCell align='center'>{getLocationNameFromData('district', row.districtId)}</StyledTableCell>
-                  <StyledTableCell align='center'>{getLocationNameFromData('province', row.provinceId)}</StyledTableCell>
+                  <StyledTableCell align='center'>{row.address}</StyledTableCell>
+                  <StyledTableCell align='center'>{row.ward.name}</StyledTableCell>
+                  <StyledTableCell align='center'>{row.ward.district.name}</StyledTableCell>
+                  <StyledTableCell align='center'>{row.ward.district.province.name}</StyledTableCell>
                   <StyledTableCell align='center'>{row.manager}</StyledTableCell>
-                  <StyledTableCell align='center'>{row.tables}</StyledTableCell>
+                  <StyledTableCell align='center'>{row.table_number}</StyledTableCell>
                 </StyledTableRow>
               ))}
-          </TableBody>
+            </TableBody>
         </Table>
       </TableContainer>
 
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={results.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={vaccinationData?.count || 0}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Box>
      
     </Box>
@@ -261,3 +195,4 @@ const VaccinationLookup = () => {
 };
 
 export default VaccinationLookup;
+
